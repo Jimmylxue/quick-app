@@ -1,20 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import '@styles/global.css'
+import { RootNavigator } from '@src/navigation/RootNavigator'
+import { ComposeProviders } from '@src/components/ComposeProviders'
+import { ApiProvider } from '@src/api/ApiProvider'
+import { NavigationContainer } from '@src/navigation/NavigationContainer'
+import { ErrorHandler } from '@src/components/ErrorHandler'
+import { RootSiblingParent } from 'react-native-root-siblings'
+import Toast from 'react-native-toast-message'
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+	return (
+		<ComposeProviders
+			components={[
+				RootSiblingParent,
+				ErrorHandler,
+				ApiProvider,
+				NavigationContainer,
+			]}
+		>
+			<RootNavigator />
+			<Toast topOffset={60} />
+		</ComposeProviders>
+	)
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
