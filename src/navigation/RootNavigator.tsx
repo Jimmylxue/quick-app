@@ -3,11 +3,9 @@ import { AuthNavigator } from './AuthNavigator'
 import { observer } from 'mobx-react-lite'
 import { auth } from '@src/hooks/useAuth'
 import { TabNavigator } from './TabNavigator'
-
-type TRootStackParams = {
-	Auth: undefined
-	Main: undefined
-}
+import { Painting } from '@src/screen/Painting'
+import { TRootStackParams } from './navigate'
+import { Camera } from '@src/screen/Camera'
 
 export const RootStack = createNativeStackNavigator<TRootStackParams>()
 
@@ -37,6 +35,16 @@ export const RootNavigator = observer(() => {
 					<RootStack.Screen
 						name="Main"
 						component={TabNavigator}
+						options={{ headerShown: false }}
+					/>
+					<RootStack.Screen
+						name="Painting"
+						component={Painting}
+						options={{ headerShown: false }}
+					/>
+					<RootStack.Screen
+						name="Camera"
+						component={Camera}
 						options={{ headerShown: false }}
 					/>
 				</RootStack.Group>

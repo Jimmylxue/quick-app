@@ -5,9 +5,9 @@ import {
 import React, { useRef } from 'react'
 import { Text, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { navigationRef } from './navigate'
 
 export const NavigationContainer = ({ children }: any) => {
-	const navigationRef = useNavigationContainerRef()
 	const routeNameRef = useRef<string>()
 
 	return (
