@@ -1,11 +1,21 @@
 import classNames from 'classnames'
-import { Text, TextInput, TextInputProps, View } from 'react-native'
+import {
+	Button,
+	Text,
+	TextInput,
+	TextInputProps,
+	TouchableOpacity,
+	View,
+} from 'react-native'
+import { NButton } from '../Button/NButton'
+import { ReactNode } from 'react'
 
 interface TProps extends TextInputProps {
 	title: string
+	rightNode?: ReactNode
 }
 
-export function Input({ title, className, ...args }: TProps) {
+export function Input({ title, className, rightNode, ...args }: TProps) {
 	return (
 		<View>
 			{title && (
@@ -13,15 +23,18 @@ export function Input({ title, className, ...args }: TProps) {
 					<Text className=" text-gray-300 font-semibold text-lg">{title}</Text>
 				</View>
 			)}
-			<TextInput
-				placeholderTextColor="#d1d5db"
-				className={classNames(
-					' border-b border-solid border-white py-4 text-gray-300 text-lg -mt-2',
-					className
-				)}
-				placeholder="Please type your name"
-				{...args}
-			/>
+			<View className=" flex-row border-b border-solid border-white">
+				<TextInput
+					placeholderTextColor="#d1d5db"
+					className={classNames(
+						'  py-4 text-gray-300 text-lg -mt-2 flex-grow',
+						className
+					)}
+					placeholder="Please type your name"
+					{...args}
+				/>
+				{rightNode}
+			</View>
 		</View>
 	)
 }

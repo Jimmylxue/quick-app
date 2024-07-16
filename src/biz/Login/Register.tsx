@@ -47,7 +47,7 @@ export function Register({ changePage }: TProps) {
 						<Text className=" text-gray-500 text-xl mt-2">Sign in to join</Text>
 					</View>
 					<View className=" mt-10">
-						<Input title="UserName" placeholder="Please type your name" />
+						<Input title="Email" placeholder="Please type your name" />
 					</View>
 					<View className=" mt-10">
 						<Input

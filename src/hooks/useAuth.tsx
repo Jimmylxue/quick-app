@@ -1,7 +1,9 @@
 import {
+	TLoginResponse,
 	TUser,
 	TUserRegisterParams,
 	useLogin,
+	useLoginByMail,
 	useRegister,
 } from '@src/api/login'
 import {
@@ -54,18 +56,20 @@ class Auth {
 
 export const auth = new Auth()
 
+const loginSuccessCallback = async (res: TLoginResponse) => {
+	Toast.show({
+		type: 'success',
+		text1: '登录成功',
+	})
+	await setAuthToken(res.token)
+	await setAuthUser(JSON.stringify(res.user))
+	auth.setLoginUser(res.user)
+	auth.setToken(res.token)
+}
+
 export function useUser() {
 	const { mutateAsync } = useLogin({
-		onSuccess: async res => {
-			Toast.show({
-				type: 'success',
-				text1: '登录成功',
-			})
-			await setAuthToken(res.token)
-			await setAuthUser(JSON.stringify(res.user))
-			auth.setLoginUser(res.user)
-			auth.setToken(res.token)
-		},
+		onSuccess: loginSuccessCallback,
 	})
 	const { mutateAsync: registerFn } = useRegister({
 		onSuccess: () => {
@@ -74,6 +78,13 @@ export function useUser() {
 				text1: '注册成功',
 			})
 		},
+	})
+
+	/**
+	 * 邮箱登录
+	 */
+	const { mutateAsync: loginByMail } = useLoginByMail({
+		onSuccess: loginSuccessCallback,
 	})
 
 	useEffect(() => {
@@ -136,5 +147,6 @@ export function useUser() {
 		checkUserLoginBeforeFn,
 		updateUser,
 		logOut,
+		loginByMail,
 	}
 }

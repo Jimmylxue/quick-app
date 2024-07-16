@@ -33,7 +33,6 @@ export class HTTPClient {
 
 		http.interceptors.response.use(
 			res => {
-				console.log('>>>>', res)
 				// TODO 根据后端接口格式处理异常
 				if (
 					res.config.responseType === 'blob' ||
@@ -54,7 +53,7 @@ export class HTTPClient {
 			err => {
 				let error = err
 
-				console.log('哇 NG', error)
+				console.log('哇 NG', error.response.data.message)
 
 				// 处理一下特定的服务端异常
 				if (err instanceof AxiosError) {
@@ -88,13 +87,13 @@ export class HTTPClient {
 		return (error: Error) => {
 			/** Sentry 上报接口错误信息 */
 			// Sentry.captureException(error)
-			console.log(error)
 
 			if (!handleError) {
 				return Promise.reject(error)
 			}
 
-			const message = error.message
+			// @ts-ignore
+			const message = error.response.data.message || error.message
 
 			Toast.show({
 				// position: 'bottom',

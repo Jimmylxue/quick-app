@@ -1,6 +1,5 @@
 import { NButton } from '@src/components/Button/NButton'
 import { HelloWave } from '@src/components/HelloWave'
-import { auth } from '@src/hooks/useAuth'
 import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
 import { Image, Text, View } from 'react-native'

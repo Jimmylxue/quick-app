@@ -3,7 +3,6 @@ import { NIcon } from '@src/components/Icon/NIcon'
 import { Input } from '@src/components/Input'
 import { useUser } from '@src/hooks/useAuth'
 import { auth } from '@src/hooks/useAuth'
-import { encrypt } from '@src/utils/encrypt'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
@@ -12,6 +11,10 @@ import Animated, {
 	useAnimatedStyle,
 	withTiming,
 } from 'react-native-reanimated'
+import { throttle } from 'lodash-es'
+import { useSendMail } from '@src/api/login'
+import Toast from 'react-native-toast-message'
+import { isQQMail } from '@src/utils/util'
 
 type TProps = {
 	changePage: React.Dispatch<
@@ -20,10 +23,19 @@ type TProps = {
 }
 
 export const Login = observer(({ changePage }: TProps) => {
-	const [phone, setPhone] = useState<string>('')
-	const [password, setPassword] = useState<string>('')
+	const [mail, setMail] = useState<string>('1002661758@qq.com')
+	const [code, setCode] = useState<string>('112233')
 
-	const { login } = useUser()
+	const { loginByMail } = useUser()
+
+	const { mutateAsync: sendMailCode } = useSendMail({
+		onSuccess: () => {
+			Toast.show({
+				type: 'success',
+				text1: '验证码发送成功，有效期10分钟',
+			})
+		},
+	})
 
 	const opacity = useSharedValue(0)
 
@@ -60,33 +72,49 @@ export const Login = observer(({ changePage }: TProps) => {
 					</View>
 					<View className=" mt-10">
 						<Input
-							title="UserName"
-							placeholder="Please type your name"
-							value={phone}
+							title="Email"
+							placeholder="Please type your QQ mail"
+							value={mail}
 							onChangeText={val => {
-								setPhone(val)
+								setMail(val)
 							}}
+							rightNode={
+								<NButton
+									type="link"
+									onPress={throttle(async () => {
+										if (!isQQMail(mail)) {
+											Toast.show({
+												type: 'error',
+												text1: '请输入正确的qq邮箱地址',
+											})
+											return
+										}
+										await sendMailCode({ mail })
+									}, 1000)}
+								>
+									Send Mail
+								</NButton>
+							}
 						/>
 					</View>
 					<View className=" mt-10">
 						<Input
-							title="Password"
+							title="Verification Code"
 							secureTextEntry
 							autoComplete="password"
 							textContentType="password"
-							placeholder="Please type your password"
-							value={password}
-							onChangeText={val => setPassword(val)}
+							placeholder="Please type your verification code"
+							value={code}
+							onChangeText={val => setCode(val)}
 						/>
 					</View>
 
 					<View className=" justify-center flex-row">
 						<NButton
 							type="primary"
-							className=" mt-20 rounded-3xl w-full"
+							className=" mt-20 rounded-3xl w-[270]"
 							onPress={async () => {
-								const newPassword = await encrypt(password)
-								await login({ phone, password: newPassword })
+								await loginByMail({ mail: mail, code })
 							}}
 						>
 							Login

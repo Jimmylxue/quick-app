@@ -26,6 +26,8 @@ export type TUserRegisterParams = TUserLoginParams & {
 	username: string
 }
 
+export type TLoginResponse = { token: string; user: TUser }
+
 export const useData = (
 	config?: Omit<
 		UndefinedInitialDataOptions<{ name: string }[], ClientError>,
@@ -40,17 +42,9 @@ export const useData = (
 }
 
 export const useLogin = (
-	config?: UseMutationOptions<
-		{ token: string; user: TUser },
-		ClientError,
-		TUserLoginParams
-	>
+	config?: UseMutationOptions<TLoginResponse, ClientError, TUserLoginParams>
 ) => {
-	return useMutation<
-		{ token: string; user: TUser },
-		ClientError,
-		TUserLoginParams
-	>({
+	return useMutation<TLoginResponse, ClientError, TUserLoginParams>({
 		mutationFn: async data => {
 			const response: any = await http.post('user/login', data)
 			console.log('response', response)
@@ -72,6 +66,68 @@ export const useRegister = (
 	})
 }
 
+type TEmailLoginParams = {
+	mail: string
+	code: string
+}
+
+export const useLoginByMail = (
+	config?: UseMutationOptions<TLoginResponse, ClientError, TEmailLoginParams>
+) => {
+	return useMutation<TLoginResponse, ClientError, TEmailLoginParams>({
+		mutationFn: async data => {
+			const response: any = await http.post('user/login_by_mail', data)
+			console.log('response', response)
+			return response
+		},
+		...config,
+	})
+}
+
+/**
+ * 发送验证码
+ */
+export const useSendMail = (
+	config?: UseMutationOptions<boolean, ClientError, { mail: string }>
+) => {
+	return useMutation<boolean, ClientError, { mail: string }>({
+		mutationFn: async data => {
+			const response: any = await http.post('mail/send_verification_code', data)
+			console.log('response', response)
+			return response
+		},
+		...config,
+	})
+}
+
+type TUserLoginByMailParams = {
+	mail: string
+	code: string
+}
+
+type TUserRegisterByMailParams = TUserLoginByMailParams & {
+	username: string
+}
+
+/**
+ * 邮箱注册
+ */
+export const useUserRegisterByMail = (
+	config?: UseMutationOptions<
+		TLoginResponse,
+		ClientError,
+		TUserRegisterByMailParams
+	>
+) => {
+	return useMutation<TLoginResponse, ClientError, TUserRegisterByMailParams>({
+		mutationFn: async data => {
+			const response: any = await http.post('user/register_by_mail', data)
+			console.log('response', response)
+			return response
+		},
+		...config,
+	})
+}
 // export const useLogin = (
 // 	config?: Omit<
 // 		UndefinedInitialDataOptions<TstOm.VideoService.Group, ClientError>,
