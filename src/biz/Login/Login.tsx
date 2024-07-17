@@ -66,7 +66,7 @@ export const Login = observer(({ changePage }: TProps) => {
 					<View className=" mt-10 ">
 						<Text className=" text-white text-5xl">Sign in</Text>
 						<Text className=" text-gray-500 text-xl mt-2">
-							Sign in to continue
+							Sign in to continue {process.env.EXPO_PUBLIC_API_BASE_URL}
 							{auth.token}
 						</Text>
 					</View>

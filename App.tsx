@@ -1,4 +1,4 @@
-import '@styles/global.css'
+import './src/styles/global.css'
 import { RootNavigator } from '@src/navigation/RootNavigator'
 import { ComposeProviders } from '@src/components/ComposeProviders'
 import { ApiProvider } from '@src/api/ApiProvider'
