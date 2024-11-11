@@ -100,11 +100,15 @@ export function useUser() {
 		}
 	}, [])
 
-	const login = async (params: { phone: string; password: string }) => {
-		console.log('pppp', params)
+	const login = async (params: {
+		phone: string
+		password: string
+		noEncrypt?: boolean
+	}) => {
 		await mutateAsync({
 			phone: params.phone,
 			password: params.password,
+			noEncrypt: params.noEncrypt,
 		})
 	}
 

@@ -20,6 +20,7 @@ export type TUser = {
 export type TUserLoginParams = {
 	phone: string
 	password: string
+	noEncrypt?: boolean
 }
 
 export type TUserRegisterParams = TUserLoginParams & {

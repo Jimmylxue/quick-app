@@ -4,7 +4,8 @@
   "main": "expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
+    "android": "NODE_ENV=test expo start --android",
+    "android:prod": "NODE_ENV=production expo start --android",
     "ios": "NODE_ENV=test expo start --ios",
     "ios:prod": "NODE_ENV=production expo start --ios",
     "web": "expo start --web",

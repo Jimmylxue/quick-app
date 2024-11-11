@@ -15,11 +15,10 @@ export class HTTPClient {
 
 	constructor(baseURL?: string) {
 		const http = axios.create({
-			// baseURL: 'https://api.jimmyxuexue.top/',
 			baseURL: baseURL || process.env.EXPO_PUBLIC_API_BASE_URL,
 		})
 
-		console.log('dddd', process.env.EXPO_PUBLIC_API_BASE_URL)
+		console.log('API REQUEST', process.env.EXPO_PUBLIC_API_BASE_URL)
 
 		http.interceptors.request.use(async req => {
 			const token = auth.token
@@ -27,7 +26,6 @@ export class HTTPClient {
 				[HTTPClient.AUTH_TOKEN_HEADER_NAME]: 'Bearer ' + token,
 			}
 			req.headers = Object.assign(req.headers, header)
-			console.log(req.baseURL)
 			return req
 		})
 

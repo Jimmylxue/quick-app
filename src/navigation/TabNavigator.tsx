@@ -1,14 +1,10 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { NIcon } from '@src/components/Icon/NIcon'
 import { Home } from '@src/screen/Home'
+import { Mine } from '@src/screen/Mine'
 
 import React from 'react'
-import type { ImageSourcePropType } from 'react-native'
-import { Image } from 'react-native'
 const Tab = createBottomTabNavigator()
-
-const TabIcon = ({ source }: { source?: ImageSourcePropType | undefined }) => {
-	return <Image className="size-6" source={source} />
-}
 
 export const TabNavigator = () => {
 	return (
@@ -27,8 +23,25 @@ export const TabNavigator = () => {
 				options={{
 					tabBarLabel: '首页',
 					headerShown: false,
+					tabBarIcon: () => (
+						<NIcon
+							iconType="EvilIcons"
+							name="chevron-left"
+							color="#000"
+							size={22}
+							onPress={() => {}}
+						/>
+					),
 				}}
 				component={Home}
+			/>
+			<Tab.Screen
+				name="Mine"
+				options={{
+					tabBarLabel: '我的',
+					headerShown: false,
+				}}
+				component={Mine}
 			/>
 		</Tab.Navigator>
 	)

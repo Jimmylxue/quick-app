@@ -1,19 +1,20 @@
 import Button from '@src/components/Button/Button'
-import { navigates } from '@src/navigation/navigate'
+import { useUser } from '@src/hooks/useAuth'
 import { Text, View } from 'react-native'
 
-export function Home() {
+export function Mine() {
+	const { logOut } = useUser()
 	return (
 		<View className=" w-full h-full justify-center items-center">
-			<Text>Homeaa</Text>
+			<Text>Mine~</Text>
+
 			<Button
 				theme="primary"
 				onPress={() => {
-					console.log('click')
-					navigates('Painting', undefined)
+					logOut()
 				}}
 			>
-				Painting
+				退出登录
 			</Button>
 		</View>
 	)
