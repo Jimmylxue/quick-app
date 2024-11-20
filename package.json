@@ -4,8 +4,8 @@
   "main": "expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "android": "NODE_ENV=test expo start --android",
-    "android:prod": "cross-env ODE_ENV=production expo start --android",
+    "android:test": "NODE_ENV=test expo start --android",
+    "android": "cross-env ODE_ENV=production expo start --android",
     "ios": "NODE_ENV=test expo start --ios",
     "ios:prod": "NODE_ENV=production expo start --ios",
     "web": "expo start --web",
