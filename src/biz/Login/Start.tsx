@@ -39,9 +39,7 @@ export const StartIndex = observer(({ changePage }: TProps) => {
 
         <View className="  mb-5 mt-10">
           <View className="flex-row justify-center items-center">
-            <Text className=" text-white text-3xl font-semibold ">
-              淘宝推广系统
-            </Text>
+            <Text className="  text-3xl font-semibold ">淘宝推广系统</Text>
           </View>
         </View>
 

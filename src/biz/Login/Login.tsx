@@ -41,7 +41,7 @@ export const Login = observer(({ changePage }: TProps) => {
         <NIcon
           iconType="EvilIcons"
           name="chevron-left"
-          color="#FFF"
+          // color="#FFF"
           size={50}
           onPress={() => {
             changePage("start")
@@ -50,15 +50,16 @@ export const Login = observer(({ changePage }: TProps) => {
 
         <View className=" px-4">
           <View className=" mt-10 ">
-            <Text className=" text-white text-3xl">登录</Text>
+            <Text className="  text-3xl">登录</Text>
             <Text className=" text-gray-500 text-ls mt-2">
               请输入您的账号密码
             </Text>
           </View>
           <View className=" mt-10">
             <Input
-              title="Phone"
-              placeholder="Please type your QQ mail"
+              style={{ color: "black" }}
+              title="ID"
+              placeholder="请输入ID"
               value={phone}
               onChangeText={(val) => {
                 setPhone(val)
@@ -67,11 +68,12 @@ export const Login = observer(({ changePage }: TProps) => {
           </View>
           <View className=" mt-10">
             <Input
-              title="Password"
+              style={{ color: "black" }}
+              title="密码"
               secureTextEntry
               autoComplete="password"
               textContentType="password"
-              placeholder="Please type your password"
+              placeholder="请输入密码"
               value={password}
               onChangeText={(val) => setPassword(val)}
             />
@@ -85,7 +87,7 @@ export const Login = observer(({ changePage }: TProps) => {
                 await login({ id: phone, password, noEncrypt: true })
               }}
             >
-              Login1
+              登录
             </NButton>
           </View>
         </View>
