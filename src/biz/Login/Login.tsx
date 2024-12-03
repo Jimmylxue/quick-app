@@ -2,7 +2,6 @@ import { NButton } from "@src/components/Button/NButton"
 import { NIcon } from "@src/components/Icon/NIcon"
 import { Input } from "@src/components/Input"
 import { useUser } from "@src/hooks/useAuth"
-import { auth } from "@src/hooks/useAuth"
 import { observer } from "mobx-react-lite"
 import { useEffect, useState } from "react"
 import { Text, View } from "react-native"
@@ -19,7 +18,7 @@ type TProps = {
 }
 
 export const Login = observer(({ changePage }: TProps) => {
-  const [phone, setPhone] = useState<string>("13344445555")
+  const [phone, setPhone] = useState<string>("173116001")
   const [password, setPassword] = useState<string>("123456")
 
   const { login } = useUser()
@@ -83,10 +82,10 @@ export const Login = observer(({ changePage }: TProps) => {
               type="primary"
               className=" mt-20 rounded-3xl w-[270]"
               onPress={async () => {
-                await login({ phone, password, noEncrypt: true })
+                await login({ id: phone, password, noEncrypt: true })
               }}
             >
-              Login
+              Login1
             </NButton>
           </View>
         </View>

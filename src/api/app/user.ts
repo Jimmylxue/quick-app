@@ -15,6 +15,6 @@ export function fetchDetail() {
 
 export function fetchCoin() {
   return useMutation({
-    mutationFn: async () => http.post("phone_coin/info"),
+    mutationFn: async () => http.post("/phone_coin/info"),
   })
 }
