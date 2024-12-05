@@ -84,7 +84,10 @@ export const Login = observer(({ changePage }: TProps) => {
               type="primary"
               className=" mt-20 rounded-3xl w-[270]"
               onPress={async () => {
+                console.log("123123")
+
                 await login({ id: phone, password, noEncrypt: true })
+                console.log("123123")
               }}
             >
               登录

@@ -57,8 +57,6 @@ class Auth {
 export const auth = new Auth()
 
 const loginSuccessCallback = async (res: TLoginResponse) => {
-  console.log(res)
-
   Toast.show({
     type: "success",
     text1: "登录成功",

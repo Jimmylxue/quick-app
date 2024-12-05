@@ -1,7 +1,7 @@
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
 import { getProductList } from "@src/api/app"
 import { useEffect, useState } from "react"
-import { BackHandler, Pressable, Text, View } from "react-native"
+import { BackHandler, Image, Pressable, Text, View } from "react-native"
 import Toast from "react-native-toast-message"
 import { WebView } from "react-native-webview"
 
@@ -22,57 +22,45 @@ function getCoin(coin: number) {
   })
 }
 
-export function Home() {
+export function NewHome() {
   const tabBarHeight = useBottomTabBarHeight()
   const [linkType, setLinkType] = useState(2)
+  const { data, refetch } = getProductList({ pageSize: 3, linkType })
   const [uri, setUrl] = useState<any>({})
-  const { data, refetch } = getProductList({ pageSize: 10, linkType })
-  const [visitTime, setVisitTime] = useState<number>(10)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState(true)
   const [isStop, setIsStop] = useState<boolean>(false)
   const [isNoShow, setIsNoShow] = useState<boolean>(false)
+  const [visitTime, setVisitTime] = useState(10)
 
-  useEffect(() => {
-    // async function initData() {
-    //   setIsLoading(true) // 开始加载
-    //   await refetch()
-    //   console.log(data.length)
-
-    //   if (data.length === 0) {
-    //     setIsNoShow(true)
-    //   } else {
-    //     setIsNoShow(false)
-    //   }
-    //   const randomData = data?.[randomNum(data?.length)]
-    //   setUrl(randomData)
-    //   setVisitTime(randomData?.visitTime || 10) // 初始化倒计时
-    // }
-    // initData()
-    console.log("linktype", linkType)
-  }, [linkType, data])
-
-  useEffect(() => {
-    if (isStop) {
-      return
-    }
-    if (isLoading || visitTime <= 0) {
-      if (visitTime <= 0) {
-        getCoin(uri.coin || 10)
-        async function refreshData() {
-          setIsLoading(true)
-          await refetch()
-          const randomData = data?.[randomNum(data?.length)]
-          setUrl(randomData)
-          setVisitTime(randomData?.visitTime || 10)
-          setTimeout(() => setIsLoading(false), 3000)
+  const handleInjectJavaScript = `
+    (function() {
+      // 等待页面加载完成
+      setTimeout(() => {
+        const imgElement = document.querySelector('img[src="https://gw.alicdn.com/tfs/TB1QZN.CYj1gK0jSZFuXXcrHpXa-200-200.png"]');
+        if (imgElement) {
+          imgElement.click(); // 自动模拟点击
         }
-        refreshData()
-      }
+      }, 0)
+    })();
+  `
+
+  useEffect(() => {
+    setIsLoading(true)
+    refetch()
+  }, [linkType])
+
+  useEffect(() => {
+    if (data?.length > 0) {
+      setIsStop(false)
+      setIsNoShow(false)
+      const randomData = data[randomNum(data?.length)] // 随机选择一个商品
+      setUrl(randomData)
+      setVisitTime(randomData.visitTime)
     } else {
-      const timer = setTimeout(() => setVisitTime(visitTime - 1), 1000)
-      return () => clearTimeout(timer)
+      setIsStop(true)
+      setIsNoShow(true)
     }
-  }, [visitTime, isLoading, data])
+  }, [data])
 
   useEffect(() => {
     const onBackPress = () => {
@@ -82,13 +70,13 @@ export function Home() {
           await refetch()
           const randomData = data?.[randomNum(data?.length)]
           setUrl(randomData)
-          setVisitTime(randomData?.visitTime || 10)
-          setIsStop(false) // 重置状态
+          setVisitTime(randomData.visitTime)
+          setIsStop(false)
         }
         refreshData()
-        return true // 拦截返回键事件
+        return true
       }
-      return false // 如果 isStop 为 false，则执行默认返回行为
+      return false
     }
 
     BackHandler.addEventListener("hardwareBackPress", onBackPress)
@@ -96,11 +84,17 @@ export function Home() {
     return () => {
       BackHandler.removeEventListener("hardwareBackPress", onBackPress)
     }
-  }, [isStop, refetch, data])
+  }, [isStop])
 
   useEffect(() => {
-    console.log("isNoShow", isNoShow)
-  }, [isNoShow])
+    if (visitTime > 0) {
+      const timer = setTimeout(() => setVisitTime((vit) => vit - 1), 1000)
+      return () => clearTimeout(timer)
+    } else {
+      getCoin(uri.coin)
+      refetch()
+    }
+  }, [uri, visitTime])
 
   return (
     <View
@@ -128,7 +122,8 @@ export function Home() {
           <Text style={linkType === 1 ? { color: "red" } : {}}>淘宝</Text>
         </Pressable>
       </View>
-      {!isLoading && (
+      {/* {!isLoading && !isOtherPage && ( */}
+      {!isStop && !isLoading && (
         <Text
           style={{
             position: "absolute",
@@ -139,7 +134,7 @@ export function Home() {
             padding: 20,
             fontSize: 20,
             color: "white",
-            borderRadius: 30,
+            borderRadius: 50,
           }}
         >
           {visitTime}
@@ -153,17 +148,23 @@ export function Home() {
           }}
           onShouldStartLoadWithRequest={(event) => {
             if (event.url.includes("login")) {
-              setIsLoading(true)
               setIsStop(true)
             }
             return true
           }}
           onLoad={() => {
+            setIsLoading(true)
+          }}
+          onLoadEnd={() => {
             setIsLoading(false)
           }}
         />
       )}
-      {isNoShow && <Text>暂未开通</Text>}
+      {isNoShow && (
+        <View className=" justify-center flex-row mt-[180]">
+          <Image source={require("@src/assets/images/not.png")} />
+        </View>
+      )}
     </View>
   )
 }
