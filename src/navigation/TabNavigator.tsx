@@ -1,6 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Home } from "@src/screen/Home"
-import { NewHome } from "@src/screen/Home/index copy"
 import Message from "@src/screen/Message"
 import { Mine } from "@src/screen/Mine"
 
@@ -11,8 +10,8 @@ export const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: "#f8d55c",
-        tabBarInactiveTintColor: "#58595B",
+        tabBarActiveTintColor: "#2a77c9",
+        tabBarInactiveTintColor: "#3db2f5",
         headerShown: false,
         tabBarLabelStyle: {
           fontSize: 20,
@@ -27,12 +26,13 @@ export const TabNavigator = () => {
           tabBarLabel: "首页",
           unmountOnBlur: true,
         }}
-        component={NewHome}
+        component={Home}
       />
       <Tab.Screen
         name="Message"
         options={{
           tabBarLabel: "消息",
+          unmountOnBlur: true,
         }}
         component={Message}
       />
@@ -40,6 +40,7 @@ export const TabNavigator = () => {
         name="Mine"
         options={{
           tabBarLabel: "我的",
+          unmountOnBlur: true,
         }}
         component={Mine}
       />

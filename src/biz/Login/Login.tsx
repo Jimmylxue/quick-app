@@ -1,4 +1,4 @@
-import { NButton } from "@src/components/Button/NButton"
+import Button from "@src/components/Button/Button"
 import { NIcon } from "@src/components/Icon/NIcon"
 import { Input } from "@src/components/Input"
 import { useUser } from "@src/hooks/useAuth"
@@ -80,18 +80,15 @@ export const Login = observer(({ changePage }: TProps) => {
           </View>
 
           <View className=" justify-center flex-row">
-            <NButton
-              type="primary"
+            <Button
+              theme="primary"
               className=" mt-20 rounded-3xl w-[270]"
               onPress={async () => {
-                console.log("123123")
-
                 await login({ id: phone, password, noEncrypt: true })
-                console.log("123123")
               }}
             >
               登录
-            </NButton>
+            </Button>
           </View>
         </View>
       </View>

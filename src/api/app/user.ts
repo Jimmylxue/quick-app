@@ -1,5 +1,6 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import http from "../client"
+import { auth } from "@src/hooks/useAuth"
 
 export function fetchLogin() {
   return useMutation({
@@ -14,7 +15,8 @@ export function fetchDetail() {
 }
 
 export function fetchCoin() {
-  return useMutation({
-    mutationFn: async () => http.post("/phone_coin/info"),
+  return useQuery({
+    queryKey: [auth.token],
+    queryFn: async () => http.post("/phone_coin/info"),
   })
 }

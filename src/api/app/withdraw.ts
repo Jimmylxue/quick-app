@@ -19,3 +19,9 @@ export function fetchCancelWithdraw() {
     mutationFn: async (data: any) => http.post("/withdrawal/cancel", data),
   })
 }
+
+export function fetchGetCoin() {
+  return useMutation({
+    mutationFn: async (data: any) => http.post("/gainCoin/gain", data),
+  })
+}

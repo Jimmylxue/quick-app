@@ -8,13 +8,14 @@ import { ClientError } from "../type"
 import http from "../client"
 
 export type TUser = {
-  id?: number
+  id: number
   username: string
   avatar: string
   sex: 1 | 0
   phone: string
   createTime?: string
   mail: string
+  level: number
 }
 
 export type TUserLoginParams = {

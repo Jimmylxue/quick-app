@@ -1,5 +1,4 @@
-import { NButton } from "@src/components/Button/NButton"
-import { HelloWave } from "@src/components/HelloWave"
+import Button from "@src/components/Button/Button"
 import { observer } from "mobx-react-lite"
 import { useEffect } from "react"
 import { Image, Text, View } from "react-native"
@@ -44,15 +43,15 @@ export const StartIndex = observer(({ changePage }: TProps) => {
         </View>
 
         <View className="absolute bottom-40 w-full flex-row justify-center">
-          <NButton
-            type="primary"
+          <Button
+            theme="primary"
             className=" rounded-lg w-[270]"
             onPress={() => {
               changePage("login")
             }}
           >
             登录
-          </NButton>
+          </Button>
         </View>
       </>
     </Animated.View>
