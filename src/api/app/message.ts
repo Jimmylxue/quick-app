@@ -10,6 +10,6 @@ export function getMessageList() {
 
 export function fetchReadMessage() {
   return useMutation({
-    mutationFn: async (data: any) => http.post("/letter/user/read", data),
+    mutationFn: async () => http.post("/letter/user/read", { status: 1 }),
   })
 }

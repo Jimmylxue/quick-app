@@ -1,6 +1,7 @@
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
 import { getProductList } from "@src/api/app"
 import { fetchGetCoin } from "@src/api/app/withdraw"
+import { useUser } from "@src/hooks/useAuth"
 import { useEffect, useState } from "react"
 import { BackHandler, Image, Pressable, Text, View } from "react-native"
 import Toast from "react-native-toast-message"
@@ -25,6 +26,7 @@ function getCoin(coin: number) {
 }
 
 export function Home() {
+  const { user } = useUser()
   const tabBarHeight = useBottomTabBarHeight()
   const [linkType, setLinkType] = useState(2)
   const { data, refetch } = getProductList({ pageSize: 3, linkType })
