@@ -1,10 +1,15 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import http from "../client"
 
-export function getWithdrawList() {
+export function getWithdrawList(data: any) {
   return useQuery({
     queryKey: ["withdrawList"],
-    queryFn: async () => http.post("/withdrawal/c_list"),
+    queryFn: async () => http.post("/withdrawal/c_list", data),
+    initialData: {
+      result: [],
+      total: 0,
+      page: 1,
+    },
   })
 }
 

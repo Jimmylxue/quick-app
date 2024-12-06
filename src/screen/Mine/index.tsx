@@ -1,8 +1,13 @@
 import { fetchCoin } from "@src/api/app/user"
-import { fetchRequestWithdraw } from "@src/api/app/withdraw"
+import {
+  fetchCancelWithdraw,
+  fetchRequestWithdraw,
+  getWithdrawList,
+} from "@src/api/app/withdraw"
 import Button from "@src/components/Button/Button"
 import { useUser } from "@src/hooks/useAuth"
 import classNames from "classnames"
+import moment from "moment"
 import { useRef, useState } from "react"
 import {
   Animated,
@@ -51,6 +56,12 @@ export function Mine() {
   const [coin, setCoin] = useState("")
   const { mutateAsync } = fetchRequestWithdraw()
   const [isShowButton, setIsShowButton] = useState(true)
+  const [page, setPage] = useState(1)
+  const { data: withdrawList, refetch: refetchWithdrawList } = getWithdrawList({
+    page,
+    pageSize: 20,
+  }) as any
+  const { mutateAsync: cancelWithdraw } = fetchCancelWithdraw()
 
   // 切换到 B
   const showB = () => {
@@ -280,7 +291,7 @@ export function Mine() {
                     borderRadius: 6,
                   },
                 ]}
-                onPress={() => {
+                onPress={async () => {
                   if (Number(coin) > (data as any)) {
                     Toast.show({
                       type: "error",
@@ -296,12 +307,17 @@ export function Mine() {
                     })
                     return
                   }
-                  const res = mutateAsync({
+                  await mutateAsync({
                     withdrawalCoin: Number(coin) >= 300 ? 300 : Number(coin),
                   })
-                  console.log(res, "resres")
-
-                  refetch()
+                  setCoin("")
+                  Toast.show({
+                    type: "success",
+                    text1: "申请成功，请等待审核",
+                    visibilityTime: 500,
+                  })
+                  await refetch()
+                  await refetchWithdrawList()
                 }}
               >
                 <Text style={{ color: "white" }}>提现</Text>
@@ -344,50 +360,41 @@ export function Mine() {
               padding: 10,
             }}
           >
-            {[
-              1,
-              2,
-              3,
-              4,
-              4,
-              123,
-              1,
-              23,
-              12,
-              123,
-              123,
-              123,
-              123,
-              1,
-              2,
-              3,
-              4,
-              4,
-              123,
-              1,
-              23,
-              12,
-              123,
-              123,
-              123,
-              123,
-              ,
-              1,
-              2,
-              3,
-              4,
-              4,
-              123,
-              1,
-              23,
-              12,
-              123,
-              123,
-              123,
-              123,
-            ].map((item, index) => (
-              <View key={index}>
-                <Text>{item}</Text>
+            {withdrawList?.result?.map((item: any) => (
+              <View
+                key={item.recordId}
+                className="flex-row justify-around border-b border-solid border-gray-300 py-4 items-center"
+              >
+                <Image
+                  source={require("@assets/images/coin.png")}
+                  style={{ width: 40, height: 40, borderRadius: 10 }}
+                />
+                <Text>{item.withdrawalCoin}</Text>
+                <Text>
+                  {moment(item?.createdTime).format("YYYY-MM-DD HH:mm:ss")}
+                </Text>
+                <Pressable
+                  disabled={item.payStatus === 2}
+                  onPress={async () => {
+                    await cancelWithdraw({ recordId: item.recordId })
+                    await refetchWithdrawList()
+                    Toast.show({
+                      type: "success",
+                      text1: "取消成功",
+                      visibilityTime: 500,
+                    })
+                    await refetch()
+                  }}
+                  style={{
+                    padding: 6,
+                    borderColor:
+                      item.payStatus === 1 ? "#1e90ff" : "transparent",
+                    borderWidth: 1,
+                    borderRadius: 8,
+                  }}
+                >
+                  <Text>{item.payStatus === 1 ? "取消申请" : "成功支付"}</Text>
+                </Pressable>
               </View>
             ))}
           </ScrollView>
@@ -399,7 +406,6 @@ export function Mine() {
             position: "absolute",
             width: "100%",
             bottom: 10,
-            // zIndex: 99,
           }}
         >
           <Button

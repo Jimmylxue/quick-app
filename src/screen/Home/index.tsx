@@ -4,6 +4,7 @@ import { fetchGetCoin } from "@src/api/app/withdraw"
 import { useEffect, useState } from "react"
 import { BackHandler, Image, Pressable, Text, View } from "react-native"
 import Toast from "react-native-toast-message"
+// 基于expo的项目使用expo install react-native-webview 安装该包
 import { WebView } from "react-native-webview"
 
 export const LINK_TYPE = {
@@ -157,7 +158,7 @@ export function Home() {
           source={{
             uri: uri?.fullLink,
           }}
-          onShouldStartLoadWithRequest={(event) => {
+          onShouldStartLoadWithRequest={(event: any) => {
             setIsShowLoadingImg(true)
             if (event.url.includes("login")) {
               setIsStop(true)
