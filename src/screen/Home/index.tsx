@@ -33,10 +33,22 @@ export function Home() {
   const [uri, setUrl] = useState<any>({})
   const [isLoading, setIsLoading] = useState(true)
   const [isStop, setIsStop] = useState<boolean>(false)
-  const [isNoShow, setIsNoShow] = useState<boolean>(false)
   const [visitTime, setVisitTime] = useState(10)
   const { mutateAsync: reqCoin } = fetchGetCoin()
   const [isShowLoadingImg, setIsShowLoadingImg] = useState(false)
+  const [isAutoClick, setIsAutoClick] = useState(true)
+  useEffect(() => {
+    if (user?.level === 1) {
+      if (+new Date() - (user?.createTime as any) > 1000 * 60 * 60 * 24 * 30) {
+        // 30天已过，不自动浏览
+        setIsAutoClick(false)
+      } else {
+        setIsAutoClick(true)
+      }
+    } else {
+      setIsAutoClick(true)
+    }
+  }, [user])
 
   const handleInjectJavaScript = `
     (function() {
@@ -57,13 +69,11 @@ export function Home() {
   useEffect(() => {
     if (data?.length > 0) {
       setIsStop(false)
-      setIsNoShow(false)
       const randomData = data[randomNum(data?.length)] // 随机选择一个商品
       setUrl(randomData)
       setVisitTime(randomData.visitTime)
     } else {
       setIsStop(true)
-      setIsNoShow(true)
     }
   }, [data])
 
@@ -92,7 +102,7 @@ export function Home() {
   }, [isStop])
 
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading || isStop) {
       return
     }
     if (visitTime > 0) {
@@ -101,7 +111,9 @@ export function Home() {
     } else {
       getCoin(uri.coin)
       reqCoin({ linkId: uri.linkId })
-      refetch()
+      if (isAutoClick) {
+        refetch()
+      }
     }
   }, [uri, visitTime, isLoading])
 
@@ -150,7 +162,30 @@ export function Home() {
           {visitTime}
         </Text>
       )}
-      {isNoShow ? (
+      {!isStop && !isAutoClick && (
+        <Pressable
+          onPress={() => refetch()}
+          style={{
+            position: "absolute",
+            right: 0,
+            top: "50%",
+            zIndex: 2,
+            backgroundColor: "rgba(0,0,0,.3)",
+            padding: 20,
+            borderRadius: 50,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              color: "white",
+            }}
+          >
+            下一条
+          </Text>
+        </Pressable>
+      )}
+      {!uri?.fullLink ? (
         <View className=" justify-center flex-row mt-[180]">
           <Image source={require("@src/assets/images/not.png")} />
         </View>
@@ -160,6 +195,7 @@ export function Home() {
           source={{
             uri: uri?.fullLink,
           }}
+          injectedJavaScript={handleInjectJavaScript}
           onShouldStartLoadWithRequest={(event: any) => {
             setIsShowLoadingImg(true)
             if (event.url.includes("login")) {

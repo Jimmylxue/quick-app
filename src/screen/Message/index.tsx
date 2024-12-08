@@ -18,21 +18,18 @@ export default function Message() {
 
   const fadeAnimA = useRef(new Animated.Value(0)).current
   const fadeAnimB = useRef(new Animated.Value(800)).current
-  const [msgType, setMsgType] = useState(0)
+  const [msgType, setMsgType] = useState(1)
 
-  const [commonMsg, setCommonMsg] = useState([])
+  const [commonMsg, setCommonMsg] = useState([]) as any
   const translateY = useRef(new Animated.Value(0)).current
   const [currentIndex, setCurrentIndex] = useState(0)
   const duration = 3000
-
-  const messages = [
-    "欢迎来到我们的应用！",
-    "今天的优惠活动火热进行中！",
-    "关注我们的公众号，了解更多信息！",
-    "感谢您的支持，祝您生活愉快！",
-  ]
   useEffect(() => {
-    if (messages.length === 0) return
+    console.log(msgType)
+    console.log(commonMsg)
+  }, [commonMsg, msgType])
+  useEffect(() => {
+    if (commonMsg.length === 0) return
     const interval = setInterval(() => {
       Animated.timing(translateY, {
         toValue: -50, // 假设每条消息高度为 50
@@ -41,16 +38,12 @@ export default function Message() {
       }).start(() => {
         // 滚动完成后，重置位置并切换到下一条消息
         translateY.setValue(0)
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % messages.length)
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % commonMsg.length)
       })
     }, duration)
 
     return () => clearInterval(interval) // 清除定时器
-  }, [messages, translateY, duration])
-
-  useEffect(() => {
-    console.log(commonMsg)
-  }, [commonMsg])
+  }, [commonMsg, translateY, duration])
 
   useEffect(() => {
     if (data?.length > 0) {
@@ -102,7 +95,7 @@ export default function Message() {
         duration: 500,
         useNativeDriver: true,
       }),
-    ]).start()
+    ]).start(() => setMsgType(1))
   }
 
   const styles = StyleSheet.create({
@@ -138,28 +131,37 @@ export default function Message() {
       >
         公告栏
       </Animated.Text>
-      <Animated.View
-        style={{
-          ...styles.container,
-          transform: [{ translateY: fadeAnimA }],
-        }}
-      >
+      {commonMsg.length > 0 && (
         <Animated.View
-          style={[
-            styles.animatedContainer,
-            {
-              transform: [{ translateY }],
-            },
-          ]}
+          style={{
+            ...styles.container,
+            transform: [{ translateY: fadeAnimA }],
+          }}
         >
-          <Text style={styles.message}>
-            {messages[currentIndex]} {/* 当前显示的消息 */}
-          </Text>
-          <Text style={styles.message}>
-            {messages[(currentIndex + 1) % messages.length]} {/* 下一条消息 */}
-          </Text>
+          <Animated.View
+            style={[
+              styles.animatedContainer,
+              {
+                transform: [{ translateY }],
+              },
+            ]}
+          >
+            <Text style={styles.message}>
+              {commonMsg[currentIndex]?.letter?.content}
+            </Text>
+            <Text style={styles.message}>
+              {
+                commonMsg[(currentIndex + 1) % commonMsg.length]?.letter
+                  ?.content
+              }
+            </Text>
+            {/* <Text style={styles.message}>{msgList[currentIndex]}</Text>
+            <Text style={styles.message}>
+              {msgList[(currentIndex + 1) % msgList.length]}
+            </Text> */}
+          </Animated.View>
         </Animated.View>
-      </Animated.View>
+      )}
       <Animated.Text
         className="mt-16 pl-8 font-bold text-2xl"
         style={{

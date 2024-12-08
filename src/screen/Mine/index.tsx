@@ -1,4 +1,4 @@
-import { fetchCoin } from "@src/api/app/user"
+import { fetchChangePassword, fetchCoin } from "@src/api/app/user"
 import {
   fetchCancelWithdraw,
   fetchRequestWithdraw,
@@ -52,18 +52,22 @@ export function Mine() {
   const fadeAnimA = useRef(new Animated.Value(1)).current
   const fadeAnimB = useRef(new Animated.Value(0)).current
   const topB = useRef(new Animated.Value(100)).current
+  const showChangePassword = useRef(new Animated.Value(999)).current
   const [isWithdraw, setIsWithdraw] = useState(true)
   const [coin, setCoin] = useState("")
   const { mutateAsync } = fetchRequestWithdraw()
   const [isShowButton, setIsShowButton] = useState(true)
   const [page, setPage] = useState(1)
+  const [newPassword, setNewPassword] = useState("")
+  const [originPassword, setOldPassword] = useState("")
   const { data: withdrawList, refetch: refetchWithdrawList } = getWithdrawList({
     page,
     pageSize: 20,
   }) as any
   const { mutateAsync: cancelWithdraw } = fetchCancelWithdraw()
+  const { mutateAsync: changePassword } = fetchChangePassword()
 
-  // 切换到 B
+  // 提现记录
   const showB = () => {
     Animated.parallel([
       Animated.timing(fadeAnimA, {
@@ -84,7 +88,7 @@ export function Mine() {
     ]).start()
   }
 
-  // 切换回 A
+  // 回归原来
   const showA = () => {
     Animated.parallel([
       Animated.timing(fadeAnimA, {
@@ -102,6 +106,27 @@ export function Mine() {
         duration: 500,
         useNativeDriver: true,
       }),
+      Animated.timing(showChangePassword, {
+        toValue: 999,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start()
+  }
+
+  // 修改密码
+  const showC = () => {
+    Animated.parallel([
+      Animated.timing(fadeAnimA, {
+        toValue: 0, // A 渐显
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(showChangePassword, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
     ]).start()
   }
 
@@ -112,6 +137,13 @@ export function Mine() {
         setIsShowButton(false)
         setIsWithdraw(false)
         showB()
+      },
+    },
+    {
+      title: "修改密码",
+      onPress: () => {
+        setIsShowButton(false)
+        showC()
       },
     },
     {
@@ -399,6 +431,97 @@ export function Mine() {
             ))}
           </ScrollView>
         </Animated.View>
+
+        <Animated.View
+          style={{
+            display: "flex",
+            position: "absolute",
+            transform: [{ translateY: showChangePassword }],
+            width: "100%",
+            height: 250,
+            borderRadius: 20,
+            backgroundColor: "#fff",
+            zIndex: 4,
+            padding: 20,
+          }}
+        >
+          <View className=" flex-row border-b border-solid border-blue-300 items-center">
+            <TextInput
+              placeholderTextColor="#d1d5db"
+              className={classNames("  py-4  text-lg -mt-2 flex-grow pl-4")}
+              style={{ color: "#1e90ff" }}
+              placeholder="请输入原密码"
+              value={originPassword}
+              onChangeText={setOldPassword}
+              secureTextEntry={true}
+            />
+          </View>
+          <View className=" flex-row border-b border-solid border-blue-300 items-center mt-4">
+            <TextInput
+              placeholderTextColor="#d1d5db"
+              className={classNames("  py-4  text-lg -mt-2 flex-grow pl-4")}
+              style={{ color: "#1e90ff" }}
+              placeholder="请输入新密码"
+              value={newPassword}
+              onChangeText={setNewPassword}
+              secureTextEntry={true}
+            />
+          </View>
+          <Pressable
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed ? "#1e90ff" : "#3db4f6", // 按下时变暗
+                padding: 10,
+                paddingLeft: 20,
+                paddingRight: 20,
+                borderRadius: 6,
+                marginTop: 20,
+              },
+            ]}
+            onPress={async () => {
+              const res = await changePassword({
+                originPassword,
+                newPassword,
+              })
+              if (res === "更新成功") {
+                logOut()
+              }
+            }}
+          >
+            <Text style={{ color: "white" }} className="text-center">
+              提交
+            </Text>
+          </Pressable>
+          <Pressable
+            style={{
+              position: "absolute",
+              top: -40,
+              left: "50%",
+              padding: 10,
+              transform: [{ translateX: -25 }],
+            }}
+            onPress={() => {
+              setNewPassword("")
+              setOldPassword("")
+              setIsShowButton(true)
+              showA()
+            }}
+          >
+            <Text
+              style={{
+                height: 36,
+                width: 36,
+                backgroundColor: "rgba(0,0,0,.4)",
+                borderRadius: 18,
+                textAlign: "center",
+                lineHeight: 36,
+                color: "white",
+              }}
+            >
+              X
+            </Text>
+          </Pressable>
+        </Animated.View>
       </View>
       {isShowButton && (
         <View
@@ -406,6 +529,7 @@ export function Mine() {
             position: "absolute",
             width: "100%",
             bottom: 10,
+            zIndex: 3,
           }}
         >
           <Button

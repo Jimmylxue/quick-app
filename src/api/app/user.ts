@@ -20,3 +20,9 @@ export function fetchCoin() {
     queryFn: async () => http.post("/phone_coin/info"),
   })
 }
+
+export function fetchChangePassword() {
+  return useMutation({
+    mutationFn: async (data: any) => http.post("user/c_change_pass", data),
+  })
+}
