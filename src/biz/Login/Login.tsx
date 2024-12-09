@@ -19,7 +19,7 @@ type TProps = {
 
 export const Login = observer(({ changePage }: TProps) => {
   const [phone, setPhone] = useState<string>("173116001")
-  const [password, setPassword] = useState<string>("123456")
+  const [password, setPassword] = useState<string>("123123")
 
   const { login } = useUser()
 
@@ -34,6 +34,8 @@ export const Login = observer(({ changePage }: TProps) => {
   useEffect(() => {
     opacity.value = withTiming(1, { duration: 1000 })
   }, [opacity])
+
+  const [count, setCount] = useState(0)
 
   return (
     <Animated.View style={[animatedStyle]}>
@@ -51,6 +53,7 @@ export const Login = observer(({ changePage }: TProps) => {
         <View className=" px-4">
           <View className=" mt-10 ">
             <Text className="  text-3xl">登录</Text>
+            <Text className="  text-3xl">{count}</Text>
             <Text className=" text-gray-500 text-ls mt-2">
               请输入您的账号密码
             </Text>
@@ -78,13 +81,17 @@ export const Login = observer(({ changePage }: TProps) => {
               onChangeText={(val) => setPassword(val)}
             />
           </View>
-
           <View className=" justify-center flex-row">
             <Button
               theme="primary"
               className=" mt-20 rounded-3xl w-[270]"
               onPress={async () => {
-                await login({ id: phone, password, noEncrypt: true })
+                const res = await login({
+                  id: phone,
+                  password,
+                  noEncrypt: true,
+                })
+                setCount(count + 1)
               }}
             >
               登录

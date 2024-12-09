@@ -1,22 +1,25 @@
 {
   "expo": {
-    "name": "my-app",
+    "name": "店主之家",
     "slug": "my-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/talk.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "cli": {
+      "appVersionSource": "local"
+    },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/talk.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [

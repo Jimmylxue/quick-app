@@ -15,7 +15,7 @@ export class HTTPClient {
 
   constructor(baseURL?: string) {
     const http = axios.create({
-      baseURL: baseURL || process.env.EXPO_PUBLIC_API_BASE_URL,
+      baseURL: "http://112.124.42.218:9999",
     })
 
     console.log("API REQUEST", process.env.EXPO_PUBLIC_API_BASE_URL)
