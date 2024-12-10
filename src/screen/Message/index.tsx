@@ -25,10 +25,6 @@ export default function Message() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const duration = 3000
   useEffect(() => {
-    console.log(msgType)
-    console.log(commonMsg)
-  }, [commonMsg, msgType])
-  useEffect(() => {
     if (commonMsg.length === 0) return
     const interval = setInterval(() => {
       Animated.timing(translateY, {
@@ -51,18 +47,20 @@ export default function Message() {
         sys: 0,
         msg: 0,
       }
+      const com = [] as any
       data.forEach((item: any) => {
-        if (item?.letter?.platform === 0 && item?.status === 1) {
+        if (item?.letter?.platform === 1 && item?.status === 1) {
           unread.sys += 1
         }
-        if (item?.letter?.platform === 2 && item?.status === 1) {
+        if (item?.letter?.platform === 3 && item?.status === 1) {
           unread.msg += 1
         }
-        if (item?.letter?.platform === 1) {
-          setCommonMsg([...commonMsg, item] as any)
+        if (item?.letter?.platform === 2) {
+          com.push(item)
         }
       })
       setUnreadCount(unread)
+      setCommonMsg(com)
     }
   }, [data, msgType])
 
@@ -193,9 +191,9 @@ export default function Message() {
           <Pressable
             className="ml-2 flex flex-row items-center relative"
             onPress={() => {
-              setMsgType(0)
+              setMsgType(1)
               showB()
-              readMsg()
+              readMsg({ platform: 1 })
             }}
           >
             <Image
@@ -230,9 +228,9 @@ export default function Message() {
           <Pressable
             className="ml-2 flex flex-row items-center relative"
             onPress={() => {
-              setMsgType(2)
+              setMsgType(3)
               showB()
-              readMsg()
+              readMsg({ platform: 3 })
             }}
           >
             <Image

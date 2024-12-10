@@ -250,6 +250,9 @@ export function Mine() {
           </Pressable>
         </View>
       </View>
+      <Text className="px-6 mx-4">
+        因体现人数众多，每月限提现2次，次月刷新。(佣金发放时间为8:00-22:00)
+      </Text>
       <View
         style={{
           position: "relative",

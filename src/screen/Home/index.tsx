@@ -29,7 +29,7 @@ export function Home() {
   const { user } = useUser()
   const tabBarHeight = useBottomTabBarHeight()
   const [linkType, setLinkType] = useState(2)
-  const { data, refetch } = getProductList({ pageSize: 3, linkType })
+  const { data, refetch } = getProductList({ linkType }, linkType)
   const [uri, setUrl] = useState<any>({})
   const [isLoading, setIsLoading] = useState(true)
   const [isStop, setIsStop] = useState<boolean>(false)
@@ -62,14 +62,15 @@ export function Home() {
     })();
   `
   useEffect(() => {
+    setIsShowLoadingImg(true)
     setIsLoading(true)
     refetch()
   }, [linkType])
 
   useEffect(() => {
-    if (data?.length > 0) {
+    if (data?.data?.length > 0) {
       setIsStop(false)
-      const randomData = data[randomNum(data?.length)] // 随机选择一个商品
+      const randomData = data?.data[randomNum(data?.data?.length)]
       setUrl(randomData)
       setVisitTime(randomData.visitTime)
     } else {
@@ -83,7 +84,7 @@ export function Home() {
         async function refreshData() {
           setIsLoading(true)
           await refetch()
-          const randomData = data?.[randomNum(data?.length)]
+          const randomData = data?.data?.[randomNum(data?.data?.length)]
           setUrl(randomData)
           setVisitTime(randomData.visitTime)
           setIsStop(false)
@@ -102,7 +103,7 @@ export function Home() {
   }, [isStop])
 
   useEffect(() => {
-    if (isLoading || isStop) {
+    if (isLoading || isShowLoadingImg) {
       return
     }
     if (visitTime > 0) {
@@ -115,7 +116,7 @@ export function Home() {
         refetch()
       }
     }
-  }, [uri, visitTime, isLoading])
+  }, [uri, visitTime, isLoading, isShowLoadingImg])
 
   return (
     <View
