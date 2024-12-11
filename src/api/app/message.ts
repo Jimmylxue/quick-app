@@ -14,3 +14,12 @@ export function fetchReadMessage() {
       http.post("/letter/user/read_platform", { ...data, status: 2 }),
   })
 }
+
+export function getCommonMessageList() {
+  return useQuery({
+    queryKey: ["commonMessageList"],
+    queryFn: async () =>
+      http.post("message/list", { platform: 2, page: 1, pageSize: 20 }),
+    initialData: [],
+  })
+}

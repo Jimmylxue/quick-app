@@ -1,4 +1,8 @@
-import { fetchReadMessage, getMessageList } from "@src/api/app/message"
+import {
+  fetchReadMessage,
+  getCommonMessageList,
+  getMessageList,
+} from "@src/api/app/message"
 import moment from "moment"
 import { useEffect, useRef, useState } from "react"
 import {
@@ -15,17 +19,16 @@ export default function Message() {
   const { mutateAsync: readMsg } = fetchReadMessage()
   const { data, refetch: refetchMessage } = getMessageList()
   const [unreadCount, setUnreadCount] = useState({ msg: 0, sys: 0 })
-
+  const { data: commonMsg = [] } = getCommonMessageList() as any
   const fadeAnimA = useRef(new Animated.Value(0)).current
   const fadeAnimB = useRef(new Animated.Value(999)).current
   const [msgType, setMsgType] = useState(1)
 
-  const [commonMsg, setCommonMsg] = useState([]) as any
   const translateY = useRef(new Animated.Value(0)).current
   const [currentIndex, setCurrentIndex] = useState(0)
   const duration = 3000
   useEffect(() => {
-    if (commonMsg.length === 0) return
+    if (commonMsg?.result?.length === 0) return
     const interval = setInterval(() => {
       Animated.timing(translateY, {
         toValue: -50, // 假设每条消息高度为 50
@@ -34,7 +37,9 @@ export default function Message() {
       }).start(() => {
         // 滚动完成后，重置位置并切换到下一条消息
         translateY.setValue(0)
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % commonMsg.length)
+        setCurrentIndex(
+          (prevIndex) => (prevIndex + 1) % commonMsg?.result.length
+        )
       })
     }, duration)
 
@@ -47,7 +52,6 @@ export default function Message() {
         sys: 0,
         msg: 0,
       }
-      const com = [] as any
       data.forEach((item: any) => {
         if (item?.letter?.platform === 1 && item?.status === 1) {
           unread.sys += 1
@@ -56,11 +60,9 @@ export default function Message() {
           unread.msg += 1
         }
         if (item?.letter?.platform === 2) {
-          com.push(item)
         }
       })
       setUnreadCount(unread)
-      setCommonMsg(com)
     }
   }, [data, msgType])
 
@@ -129,7 +131,7 @@ export default function Message() {
       >
         公告栏
       </Animated.Text>
-      {commonMsg.length > 0 && (
+      {commonMsg?.result.length > 0 && (
         <Animated.View
           style={{
             ...styles.container,
@@ -145,11 +147,11 @@ export default function Message() {
             ]}
           >
             <Text style={styles.message}>
-              {commonMsg[currentIndex]?.letter?.content}
+              {commonMsg?.result?.[currentIndex]?.content}
             </Text>
             <Text style={styles.message}>
               {
-                commonMsg[(currentIndex + 1) % commonMsg.length]?.letter
+                commonMsg?.result[(currentIndex + 1) % commonMsg?.result.length]
                   ?.content
               }
             </Text>
