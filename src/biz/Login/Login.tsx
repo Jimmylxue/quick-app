@@ -8,7 +8,7 @@ import { Text, View } from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withTiming,
+  withTiming
 } from "react-native-reanimated"
 
 type TProps = {
@@ -27,15 +27,13 @@ export const Login = observer(({ changePage }: TProps) => {
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      opacity: opacity.value,
+      opacity: opacity.value
     }
   })
 
   useEffect(() => {
     opacity.value = withTiming(1, { duration: 1000 })
   }, [opacity])
-
-  const [count, setCount] = useState(0)
 
   return (
     <Animated.View style={[animatedStyle]}>
@@ -49,11 +47,9 @@ export const Login = observer(({ changePage }: TProps) => {
             changePage("start")
           }}
         />
-
         <View className=" px-4">
           <View className=" mt-10 ">
             <Text className="  text-3xl">登录</Text>
-            <Text className="  text-3xl">{count}</Text>
             <Text className=" text-gray-500 text-ls mt-2">
               请输入您的账号密码
             </Text>
@@ -86,12 +82,11 @@ export const Login = observer(({ changePage }: TProps) => {
               theme="primary"
               className=" mt-20 rounded-3xl w-[270]"
               onPress={async () => {
-                const res = await login({
+                await login({
                   id: phone,
                   password,
-                  noEncrypt: true,
+                  noEncrypt: true
                 })
-                setCount(count + 1)
               }}
             >
               登录

@@ -1,6 +1,5 @@
 import { Text, View } from "react-native"
 import { StatusBar } from "expo-status-bar"
-import { Register } from "@src/biz/Login/Register"
 import { Login } from "@src/biz/Login/Login"
 import { StartIndex } from "@src/biz/Login/Start"
 import { useState } from "react"

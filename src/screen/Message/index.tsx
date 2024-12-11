@@ -8,7 +8,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native"
 
 export default function Message() {
@@ -17,7 +17,7 @@ export default function Message() {
   const [unreadCount, setUnreadCount] = useState({ msg: 0, sys: 0 })
 
   const fadeAnimA = useRef(new Animated.Value(0)).current
-  const fadeAnimB = useRef(new Animated.Value(800)).current
+  const fadeAnimB = useRef(new Animated.Value(999)).current
   const [msgType, setMsgType] = useState(1)
 
   const [commonMsg, setCommonMsg] = useState([]) as any
@@ -30,7 +30,7 @@ export default function Message() {
       Animated.timing(translateY, {
         toValue: -50, // 假设每条消息高度为 50
         duration: 500, // 滚动动画时长
-        useNativeDriver: true,
+        useNativeDriver: true
       }).start(() => {
         // 滚动完成后，重置位置并切换到下一条消息
         translateY.setValue(0)
@@ -45,7 +45,7 @@ export default function Message() {
     if (data?.length > 0) {
       const unread = {
         sys: 0,
-        msg: 0,
+        msg: 0
       }
       const com = [] as any
       data.forEach((item: any) => {
@@ -68,15 +68,15 @@ export default function Message() {
   const showB = () => {
     Animated.parallel([
       Animated.timing(fadeAnimA, {
-        toValue: 800, // A 渐隐
+        toValue: 999, // A 渐隐
         duration: 500,
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.timing(fadeAnimB, {
-        toValue: 50, // B 渐显
+        toValue: 0, // B 渐显
         duration: 500,
-        useNativeDriver: true,
-      }),
+        useNativeDriver: true
+      })
     ]).start()
   }
 
@@ -86,13 +86,13 @@ export default function Message() {
       Animated.timing(fadeAnimA, {
         toValue: 0, // A 渐显
         duration: 500,
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.timing(fadeAnimB, {
-        toValue: 800, // B 渐隐
+        toValue: 999, // B 渐隐
         duration: 500,
-        useNativeDriver: true,
-      }),
+        useNativeDriver: true
+      })
     ]).start(() => setMsgType(1))
   }
 
@@ -105,26 +105,26 @@ export default function Message() {
       marginTop: 10,
       marginLeft: 20,
       marginRight: 20,
-      borderRadius: 20,
+      borderRadius: 20
     },
     animatedContainer: {
       height: 100, // 容器高度，2 条消息的高度
-      justifyContent: "flex-start",
+      justifyContent: "flex-start"
     },
     message: {
       height: 50, // 单条消息的高度
       lineHeight: 50, // 垂直居中
       fontSize: 16,
       textAlign: "center",
-      color: "#333",
-    },
+      color: "#333"
+    }
   })
   return (
     <>
       <Animated.Text
         className="mt-16 pl-8 font-bold text-2xl"
         style={{
-          transform: [{ translateY: fadeAnimA }],
+          transform: [{ translateY: fadeAnimA }]
         }}
       >
         公告栏
@@ -133,15 +133,15 @@ export default function Message() {
         <Animated.View
           style={{
             ...styles.container,
-            transform: [{ translateY: fadeAnimA }],
+            transform: [{ translateY: fadeAnimA }]
           }}
         >
           <Animated.View
             style={[
               styles.animatedContainer,
               {
-                transform: [{ translateY }],
-              },
+                transform: [{ translateY }]
+              }
             ]}
           >
             <Text style={styles.message}>
@@ -163,7 +163,7 @@ export default function Message() {
       <Animated.Text
         className="mt-16 pl-8 font-bold text-2xl"
         style={{
-          transform: [{ translateY: fadeAnimA }],
+          transform: [{ translateY: fadeAnimA }]
         }}
       >
         消息
@@ -178,14 +178,14 @@ export default function Message() {
           marginTop: 20,
           marginLeft: 20,
           marginRight: 20,
-          transform: [{ translateY: fadeAnimA }],
+          transform: [{ translateY: fadeAnimA }]
         }}
       >
         <View
           style={{
             borderBottomColor: "#eee",
             borderBottomWidth: 2,
-            padding: 20,
+            padding: 20
           }}
         >
           <Pressable
@@ -210,7 +210,7 @@ export default function Message() {
                   width: 20,
                   height: 20,
                   borderRadius: 10,
-                  textAlign: "center",
+                  textAlign: "center"
                 }}
               >
                 {unreadCount?.sys}
@@ -222,7 +222,7 @@ export default function Message() {
           style={{
             borderBottomColor: "#eee",
             borderBottomWidth: 2,
-            padding: 20,
+            padding: 20
           }}
         >
           <Pressable
@@ -247,7 +247,7 @@ export default function Message() {
                   width: 20,
                   height: 20,
                   borderRadius: 10,
-                  textAlign: "center",
+                  textAlign: "center"
                 }}
               >
                 {unreadCount?.msg}
@@ -262,7 +262,7 @@ export default function Message() {
           height: "90%",
           width: "90%",
           marginLeft: "5%",
-          transform: [{ translateY: fadeAnimB }],
+          transform: [{ translateY: fadeAnimB }]
         }}
       >
         <ScrollView style={{ flex: 1, width: "100%" }}>
@@ -307,7 +307,7 @@ export default function Message() {
             left: "50%",
             zIndex: 2,
             padding: 10,
-            transform: [{ translateX: -25 }],
+            transform: [{ translateX: -25 }]
           }}
           onPress={async () => {
             await refetchMessage()
@@ -322,7 +322,7 @@ export default function Message() {
               borderRadius: 18,
               textAlign: "center",
               lineHeight: 36,
-              color: "white",
+              color: "white"
             }}
           >
             X

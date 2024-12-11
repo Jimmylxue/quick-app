@@ -10,7 +10,7 @@ import { WebView } from "react-native-webview"
 
 export const LINK_TYPE = {
   TaoBao: 1,
-  Amazon: 2,
+  Amazon: 2
 }
 
 function randomNum(num = 10) {
@@ -21,7 +21,7 @@ function getCoin(coin: number) {
   Toast.show({
     type: "success",
     text1: `获得${coin}金币`,
-    visibilityTime: 1000,
+    visibilityTime: 1000
   })
 }
 
@@ -123,8 +123,8 @@ export function Home() {
       style={{
         position: "relative",
         flex: 1,
-        paddingTop: tabBarHeight,
-        backgroundColor: "#fff",
+        paddingTop: tabBarHeight / 2,
+        backgroundColor: "#fff"
       }}
     >
       <View
@@ -135,7 +135,7 @@ export function Home() {
           flexDirection: "row",
           justifyContent: "space-evenly",
           width: "100%",
-          zIndex: 999,
+          zIndex: 999
         }}
       >
         <Pressable onPress={() => setLinkType(2)}>
@@ -157,7 +157,7 @@ export function Home() {
             padding: 20,
             fontSize: 20,
             color: "white",
-            borderRadius: 50,
+            borderRadius: 50
           }}
         >
           {visitTime}
@@ -173,13 +173,13 @@ export function Home() {
             zIndex: 2,
             backgroundColor: "rgba(0,0,0,.3)",
             padding: 20,
-            borderRadius: 50,
+            borderRadius: 50
           }}
         >
           <Text
             style={{
               fontSize: 20,
-              color: "white",
+              color: "white"
             }}
           >
             下一条
@@ -194,7 +194,7 @@ export function Home() {
         <WebView
           style={{ zIndex: -1 }}
           source={{
-            uri: uri?.fullLink,
+            uri: uri?.fullLink
           }}
           injectedJavaScript={handleInjectJavaScript}
           onShouldStartLoadWithRequest={(event: any) => {
