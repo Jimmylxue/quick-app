@@ -202,6 +202,7 @@ export function Mine() {
           </Text>
         </View>
       </View>
+      <Text className="px-6 mx-4 mt-4">此金币由名下所有ID构成</Text>
       <View
         style={{
           backgroundColor: "#fff",
@@ -211,6 +212,7 @@ export function Mine() {
           flexDirection: "row",
           alignItems: "center",
           position: "relative",
+          marginTop: 10,
         }}
       >
         <Image
