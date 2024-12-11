@@ -75,6 +75,8 @@ export function Home() {
       setVisitTime(randomData.visitTime)
     } else {
       setIsStop(true)
+      setUrl(null)
+      setIsShowLoadingImg(false)
     }
   }, [data])
 
