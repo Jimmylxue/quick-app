@@ -1,9 +1,17 @@
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
 import { getProductList } from "@src/api/app"
+import { fetchCoin, getPlantForm } from "@src/api/app/user"
 import { fetchGetCoin } from "@src/api/app/withdraw"
 import { useUser } from "@src/hooks/useAuth"
-import { useEffect, useState } from "react"
-import { BackHandler, Image, Pressable, Text, View } from "react-native"
+import { useEffect, useRef, useState } from "react"
+import {
+  Animated,
+  BackHandler,
+  Image,
+  Pressable,
+  Text,
+  View,
+} from "react-native"
 import Toast from "react-native-toast-message"
 // 基于expo的项目使用expo install react-native-webview 安装该包
 import { WebView } from "react-native-webview"
@@ -21,34 +29,33 @@ function getCoin(coin: number) {
   Toast.show({
     type: "success",
     text1: `获得${coin}金币`,
-    visibilityTime: 1000,
+    visibilityTime: 2000,
+    text1Style: {
+      color: "red",
+      fontSize: 20,
+    },
   })
 }
 
 export function Home() {
-  const { user } = useUser()
-  const tabBarHeight = useBottomTabBarHeight()
-  const [linkType, setLinkType] = useState(2)
-  const { data, refetch } = getProductList({ linkType }, linkType)
+  const [linkType, setLinkType] = useState(-1)
+  const { data, refetch } = getProductList({ linkTypeId: linkType }, linkType)
   const [uri, setUrl] = useState<any>({})
   const [isLoading, setIsLoading] = useState(true)
   const [isStop, setIsStop] = useState<boolean>(false)
   const [visitTime, setVisitTime] = useState(10)
   const { mutateAsync: reqCoin } = fetchGetCoin()
   const [isShowLoadingImg, setIsShowLoadingImg] = useState(false)
-  const [isAutoClick, setIsAutoClick] = useState(true)
+  const [isAutoClick, setIsAutoClick] = useState(false)
+  const fadeAnimA = useRef(new Animated.Value(0)).current
+  const { data: platformList } = getPlantForm() as any
+  const { data: coin, refetch: getCoinFetch } = fetchCoin() as any
+  const currentTime = useRef(+new Date())
   useEffect(() => {
-    if (user?.level === 1) {
-      if (+new Date() - (user?.createTime as any) > 1000 * 60 * 60 * 24 * 30) {
-        // 30天已过，不自动浏览
-        setIsAutoClick(false)
-      } else {
-        setIsAutoClick(true)
-      }
-    } else {
-      setIsAutoClick(true)
+    if ((+new Date() - currentTime.current) / 1000 / 60 > 1) {
+      setIsAutoClick(false)
     }
-  }, [user])
+  }, [coin])
 
   const handleInjectJavaScript = `
     (function() {
@@ -65,7 +72,7 @@ export function Home() {
     setIsShowLoadingImg(true)
     setIsLoading(true)
     refetch()
-  }, [linkType])
+  }, [linkType, isAutoClick])
 
   useEffect(() => {
     if (data?.data?.length > 0) {
@@ -114,6 +121,7 @@ export function Home() {
     } else {
       getCoin(uri.coin)
       reqCoin({ linkId: uri.linkId })
+      getCoinFetch()
       if (isAutoClick) {
         refetch()
       }
@@ -125,26 +133,125 @@ export function Home() {
       style={{
         position: "relative",
         flex: 1,
-        paddingTop: tabBarHeight / 2,
+        paddingTop: 40,
         backgroundColor: "#fff",
       }}
     >
-      <View
+      <Animated.View
         style={{
-          position: "absolute",
-          top: tabBarHeight / 2 - 20,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-evenly",
           width: "100%",
+          height: "100%",
+          backgroundColor: "white",
+          position: "absolute",
+          top: 0,
+          transform: [{ translateY: fadeAnimA }],
           zIndex: 999,
+          padding: 20,
         }}
       >
-        <Pressable onPress={() => setLinkType(2)}>
-          <Text style={linkType === 2 ? { color: "#2a77c9" } : {}}>亚马逊</Text>
+        {platformList?.map((item: any) => (
+          <Pressable
+            style={{
+              backgroundColor: "rgba(0,0,0,.1)",
+              padding: 10,
+              borderRadius: 10,
+              marginVertical: 10,
+            }}
+            className="relative"
+            onPress={() => {
+              if (item?.openStatus === 2) {
+                Toast.show({
+                  type: "error",
+                  text1: "该平台暂未开放",
+                  visibilityTime: 500,
+                })
+                return
+              }
+              setLinkType(item?.linkTypeId)
+              Animated.parallel([
+                Animated.timing(fadeAnimA, {
+                  toValue: 999, // A 渐显
+                  duration: 500,
+                  useNativeDriver: true,
+                }),
+              ]).start()
+            }}
+          >
+            <View className="flex flex-row items-center">
+              <Image
+                source={{ uri: item?.mainImage }}
+                width={50}
+                height={50}
+                borderRadius={25}
+                className="ml-10"
+              />
+              <Text className="text-2xl ml-4">{item?.name}</Text>
+            </View>
+            <View
+              className="absolute"
+              style={{
+                top: 50,
+                right: 10,
+                backgroundColor: item?.openStatus === 2 ? "red" : "green",
+                width: 10,
+                height: 10,
+                borderRadius: 10,
+                transform: [{ translateX: -25 }, { translateY: -20 }],
+              }}
+            ></View>
+          </Pressable>
+        ))}
+      </Animated.View>
+      <View
+        className="justify-evenly"
+        style={{
+          position: "absolute",
+          top: 0,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          width: "100%",
+          zIndex: 3,
+          height: 40,
+          paddingHorizontal: 20,
+        }}
+      >
+        <View className="w-32 flex flex-row items-center">
+          <Image
+            source={require("@assets/images/coin.png")}
+            style={{ width: 30, height: 30, borderRadius: 50 }}
+          />
+          <Text>{coin as any}</Text>
+        </View>
+        <Pressable
+          className="w-32 text-center flex flex-row items-center justify-center"
+          style={{
+            borderColor: "#3db2f5",
+            borderWidth: 1,
+            borderRadius: 50,
+            padding: 5,
+          }}
+          onPress={() => {
+            setLinkType(-1)
+            Animated.parallel([
+              Animated.timing(fadeAnimA, {
+                toValue: 0, // A 渐显
+                duration: 500,
+                useNativeDriver: true,
+              }),
+            ]).start()
+          }}
+        >
+          <Text style={{ color: "#3db2f5" }}>
+            {platformList?.find((item: any) => item.linkTypeId === linkType)
+              ?.name || ""}
+          </Text>
         </Pressable>
-        <Pressable onPress={() => setLinkType(1)}>
-          <Text style={linkType === 1 ? { color: "#2a77c9" } : {}}>淘宝</Text>
+        <Pressable
+          className="w-32 text-center"
+          onPress={() => setIsAutoClick(true)}
+        >
+          <Text className="text-center">开始</Text>
         </Pressable>
       </View>
       {/* {!isLoading && !isOtherPage && ( */}
@@ -165,7 +272,7 @@ export function Home() {
           {visitTime}
         </Text>
       )}
-      {!isStop && !isAutoClick && (
+      {/* {!isStop && !isAutoClick && (
         <Pressable
           onPress={() => refetch()}
           style={{
@@ -187,7 +294,7 @@ export function Home() {
             下一条
           </Text>
         </Pressable>
-      )}
+      )} */}
       {!uri?.fullLink ? (
         <View className=" justify-center flex-row mt-[180]">
           <Image source={require("@src/assets/images/not.png")} />

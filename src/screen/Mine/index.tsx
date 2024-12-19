@@ -1,4 +1,4 @@
-import { fetchChangePassword, fetchCoin } from "@src/api/app/user"
+import { fetchChangePassword, fetchCoin, fetchLogout } from "@src/api/app/user"
 import {
   fetchCancelWithdraw,
   fetchRequestWithdraw,
@@ -60,6 +60,7 @@ export function Mine() {
   const [page, setPage] = useState(1)
   const [newPassword, setNewPassword] = useState("")
   const [originPassword, setOldPassword] = useState("")
+  const { mutateAsync: statusLogout } = fetchLogout()
   const { data: withdrawList, refetch: refetchWithdrawList } = getWithdrawList({
     page,
     pageSize: 20,
@@ -253,7 +254,7 @@ export function Mine() {
         </View>
       </View>
       <Text className="px-6 mx-4">
-        因体现人数众多，每月限提现2次，次月刷新。(佣金发放时间为8:00-22:00)
+        因提现人数众多，每月限提现2次，次月刷新。(佣金发放时间为8:00-22:00)
       </Text>
       <View
         style={{
@@ -540,7 +541,8 @@ export function Mine() {
           <Button
             theme="primary"
             className=" mt-20 rounded-3xl"
-            onPress={() => {
+            onPress={async () => {
+              await statusLogout()
               logOut()
             }}
           >

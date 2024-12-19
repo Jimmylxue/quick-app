@@ -23,6 +23,25 @@ export function fetchCoin() {
 
 export function fetchChangePassword() {
   return useMutation({
-    mutationFn: async (data: any) => http.post("user/c_change_pass", data),
+    mutationFn: async (data: any) => http.post("/user/c_change_pass", data),
+  })
+}
+
+export function fetchLogout() {
+  return useMutation({
+    mutationFn: async () => http.post("/user/logout"),
+  })
+}
+
+export function fetchHeart() {
+  return useMutation({
+    mutationFn: async () => http.post("/user/heartbeat"),
+  })
+}
+
+export function getPlantForm() {
+  return useQuery({
+    queryKey: ["plant_form"],
+    queryFn: async () => http.post("link_platform/list"),
   })
 }

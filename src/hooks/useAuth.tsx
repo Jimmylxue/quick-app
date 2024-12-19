@@ -60,6 +60,8 @@ const loginSuccessCallback = async (res: TLoginResponse) => {
   Toast.show({
     type: "success",
     text1: "登录成功",
+    position: "bottom",
+    visibilityTime: 500,
   })
   await setAuthToken(res.token)
   await setAuthUser(JSON.stringify(res.user))
