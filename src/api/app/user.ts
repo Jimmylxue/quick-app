@@ -45,3 +45,9 @@ export function getPlantForm() {
     queryFn: async () => http.post("link_platform/list"),
   })
 }
+
+export function fetchMeInfo() {
+  return useMutation({
+    mutationFn: async () => http.post("rich_text/list", { richTextId: 1 }),
+  })
+}

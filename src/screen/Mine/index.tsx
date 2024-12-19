@@ -1,4 +1,9 @@
-import { fetchChangePassword, fetchCoin, fetchLogout } from "@src/api/app/user"
+import {
+  fetchChangePassword,
+  fetchCoin,
+  fetchLogout,
+  fetchMeInfo,
+} from "@src/api/app/user"
 import {
   fetchCancelWithdraw,
   fetchRequestWithdraw,
@@ -8,7 +13,7 @@ import Button from "@src/components/Button/Button"
 import { useUser } from "@src/hooks/useAuth"
 import classNames from "classnames"
 import moment from "moment"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   Animated,
   Image,
@@ -47,12 +52,13 @@ const getAvatar = (id: number) => {
 }
 
 export function Mine() {
-  const { logOut, user } = useUser()
+  const { logOut, user } = useUser() as any
   const { data, refetch } = fetchCoin()
   const fadeAnimA = useRef(new Animated.Value(1)).current
   const fadeAnimB = useRef(new Animated.Value(0)).current
   const topB = useRef(new Animated.Value(100)).current
   const showChangePassword = useRef(new Animated.Value(999)).current
+  const meInfo = useRef(new Animated.Value(999)).current
   const [isWithdraw, setIsWithdraw] = useState(true)
   const [coin, setCoin] = useState("")
   const { mutateAsync } = fetchRequestWithdraw()
@@ -67,6 +73,8 @@ export function Mine() {
   }) as any
   const { mutateAsync: cancelWithdraw } = fetchCancelWithdraw()
   const { mutateAsync: changePassword } = fetchChangePassword()
+  const { mutateAsync: meInfoText } = fetchMeInfo()
+  const [text, setText] = useState("")
 
   // 提现记录
   const showB = () => {
@@ -195,67 +203,25 @@ export function Mine() {
             style={{
               fontSize: 16,
               fontWeight: "bold",
-              marginTop: 15,
+              marginTop: 10,
               color: "#fff",
             }}
           >
-            用户级别：{user?.level === 1 ? "新人" : "专职"}
+            用户名：{user?.wxName}
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "bold",
+              marginTop: 10,
+              color: "#fff",
+            }}
+          >
+            手机号：{user?.phone}
           </Text>
         </View>
       </View>
-      <Text className="px-6 mx-4 mt-4">此金币由名下所有ID构成</Text>
-      <View
-        style={{
-          backgroundColor: "#fff",
-          margin: 20,
-          borderRadius: 20,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          position: "relative",
-          marginTop: 10,
-        }}
-      >
-        <Image
-          source={require("@assets/images/coin.png")}
-          style={{ width: 100, height: 100, borderRadius: 50 }}
-        />
-        <Text style={{ fontSize: 22 }}>{data as any}</Text>
-        <View
-          style={{
-            backgroundColor: "#fff",
-            marginLeft:
-              130 -
-              ((data as any) >= 1000
-                ? 30
-                : (data as any) >= 100
-                ? 35
-                : (data as any) >= 10
-                ? 20
-                : 0),
-            borderLeftWidth: 2,
-            borderLeftColor: "#eee",
-            paddingLeft: 20,
-          }}
-        >
-          <Pressable
-            onPress={() => {
-              setIsShowButton(false)
-              setIsWithdraw(true)
-              showB()
-            }}
-          >
-            <Image
-              source={require("@assets/images/withdraw.png")}
-              style={{ width: 30, height: 30 }}
-            />
-            <Text>提现</Text>
-          </Pressable>
-        </View>
-      </View>
-      <Text className="px-6 mx-4">
-        因提现人数众多，每月限提现2次，次月刷新。(佣金发放时间为8:00-22:00)
-      </Text>
+
       <View
         style={{
           position: "relative",
@@ -263,6 +229,7 @@ export function Mine() {
           margin: 20,
         }}
       >
+        {/* 所有内容 */}
         <Animated.View
           style={{
             opacity: fadeAnimA,
@@ -273,6 +240,77 @@ export function Mine() {
             position: "relative",
           }}
         >
+          <Text className="px-6 mx-4 mt-4">此金币由名下所有ID构成</Text>
+          <View
+            style={{
+              borderRadius: 20,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              position: "relative",
+              marginTop: 10,
+              backgroundColor: "#fff",
+              marginHorizontal: 20,
+            }}
+          >
+            <Image
+              source={require("@assets/images/coin.png")}
+              style={{ width: 30, height: 30, borderRadius: 50 }}
+            />
+            <Text>10000 = ￥1</Text>
+          </View>
+          <View
+            style={{
+              backgroundColor: "#fff",
+              margin: 20,
+              borderRadius: 20,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              position: "relative",
+              marginTop: 10,
+            }}
+          >
+            <Image
+              source={require("@assets/images/coin.png")}
+              style={{ width: 100, height: 100, borderRadius: 50 }}
+            />
+            <Text style={{ fontSize: 22 }}>{data as any}</Text>
+            <View
+              style={{
+                backgroundColor: "#fff",
+                marginLeft:
+                  130 -
+                  ((data as any) >= 1000
+                    ? 30
+                    : (data as any) >= 100
+                    ? 35
+                    : (data as any) >= 10
+                    ? 20
+                    : 0),
+                borderLeftWidth: 2,
+                borderLeftColor: "#eee",
+                paddingLeft: 20,
+              }}
+            >
+              <Pressable
+                onPress={() => {
+                  setIsShowButton(false)
+                  setIsWithdraw(true)
+                  showB()
+                }}
+              >
+                <Image
+                  source={require("@assets/images/withdraw.png")}
+                  style={{ width: 30, height: 30 }}
+                />
+                <Text>提现</Text>
+              </Pressable>
+            </View>
+          </View>
+          <Text className="px-6 mx-4">
+            因提现人数众多，每月限提现2次，次月刷新。(佣金发放时间为8:00-22:00)
+          </Text>
           {options.map((item, index) => (
             <View
               key={index}
@@ -289,7 +327,7 @@ export function Mine() {
           ))}
         </Animated.View>
 
-        {/* B 部分 */}
+        {/* 提现部分 */}
         <Animated.View
           style={{
             display: "flex",
@@ -300,7 +338,7 @@ export function Mine() {
             height: "100%",
             borderRadius: 20,
             backgroundColor: "#fff",
-            zIndex: 2,
+            zIndex: 9999,
           }}
         >
           {isWithdraw && (
@@ -438,6 +476,7 @@ export function Mine() {
           </ScrollView>
         </Animated.View>
 
+        {/* 修改密码 */}
         <Animated.View
           style={{
             display: "flex",
@@ -528,6 +567,64 @@ export function Mine() {
             </Text>
           </Pressable>
         </Animated.View>
+
+        {/* 关于我们 */}
+        <Animated.View
+          style={{
+            display: "flex",
+            position: "absolute",
+            transform: [{ translateY: meInfo }],
+            width: "100%",
+            height: 250,
+            borderRadius: 20,
+            backgroundColor: "#fff",
+            zIndex: 999,
+            padding: 20,
+          }}
+        >
+          <ScrollView
+            style={{
+              position: "relative",
+              flex: 1,
+              padding: 10,
+            }}
+          >
+            <Text>{text}</Text>
+          </ScrollView>
+          <Pressable
+            style={{
+              position: "absolute",
+              top: -40,
+              left: "50%",
+              padding: 10,
+              transform: [{ translateX: -25 }],
+            }}
+            onPress={() => {
+              Animated.parallel([
+                Animated.timing(meInfo, {
+                  toValue: 999,
+                  duration: 500,
+                  useNativeDriver: true,
+                }),
+              ]).start()
+              setIsShowButton(true)
+            }}
+          >
+            <Text
+              style={{
+                height: 36,
+                width: 36,
+                backgroundColor: "rgba(0,0,0,.4)",
+                borderRadius: 18,
+                textAlign: "center",
+                lineHeight: 36,
+                color: "white",
+              }}
+            >
+              X
+            </Text>
+          </Pressable>
+        </Animated.View>
       </View>
       {isShowButton && (
         <View
@@ -538,9 +635,27 @@ export function Mine() {
             zIndex: 3,
           }}
         >
+          <Pressable
+            onPress={async () => {
+              const res = (await meInfoText()) as any
+              setText(res?.[0]?.title)
+              setIsShowButton(false)
+              Animated.parallel([
+                Animated.timing(meInfo, {
+                  toValue: 0,
+                  duration: 500,
+                  useNativeDriver: true,
+                }),
+              ]).start()
+            }}
+          >
+            <Text style={{ color: "#3db2f5", textAlign: "center" }}>
+              关于我们
+            </Text>
+          </Pressable>
           <Button
             theme="primary"
-            className=" mt-20 rounded-3xl"
+            className="mt-2  rounded-3xl"
             onPress={async () => {
               await statusLogout()
               logOut()
