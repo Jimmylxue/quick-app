@@ -54,11 +54,11 @@ const getAvatar = (id: number) => {
 export function Mine() {
   const { logOut, user } = useUser() as any
   const { data, refetch } = fetchCoin()
-  const fadeAnimA = useRef(new Animated.Value(1)).current
-  const fadeAnimB = useRef(new Animated.Value(0)).current
-  const topB = useRef(new Animated.Value(100)).current
+  const allContent = useRef(new Animated.Value(0)).current
+  const withdraw = useRef(new Animated.Value(999)).current
   const showChangePassword = useRef(new Animated.Value(999)).current
   const meInfo = useRef(new Animated.Value(999)).current
+
   const [isWithdraw, setIsWithdraw] = useState(true)
   const [coin, setCoin] = useState("")
   const { mutateAsync } = fetchRequestWithdraw()
@@ -79,17 +79,12 @@ export function Mine() {
   // 提现记录
   const showB = () => {
     Animated.parallel([
-      Animated.timing(fadeAnimA, {
-        toValue: 0, // A 渐隐
+      Animated.timing(allContent, {
+        toValue: 999, // A 渐隐
         duration: 500,
         useNativeDriver: true,
       }),
-      Animated.timing(fadeAnimB, {
-        toValue: 1, // B 渐显
-        duration: 500,
-        useNativeDriver: true,
-      }),
-      Animated.timing(topB, {
+      Animated.timing(withdraw, {
         toValue: 0,
         duration: 500,
         useNativeDriver: true,
@@ -100,17 +95,12 @@ export function Mine() {
   // 回归原来
   const showA = () => {
     Animated.parallel([
-      Animated.timing(fadeAnimA, {
+      Animated.timing(allContent, {
         toValue: 1, // A 渐显
         duration: 500,
         useNativeDriver: true,
       }),
-      Animated.timing(fadeAnimB, {
-        toValue: 0, // B 渐隐
-        duration: 500,
-        useNativeDriver: true,
-      }),
-      Animated.timing(topB, {
+      Animated.timing(withdraw, {
         toValue: 999,
         duration: 500,
         useNativeDriver: true,
@@ -126,8 +116,8 @@ export function Mine() {
   // 修改密码
   const showC = () => {
     Animated.parallel([
-      Animated.timing(fadeAnimA, {
-        toValue: 0, // A 渐显
+      Animated.timing(allContent, {
+        toValue: 999, // A 渐显
         duration: 500,
         useNativeDriver: true,
       }),
@@ -232,25 +222,73 @@ export function Mine() {
         {/* 所有内容 */}
         <Animated.View
           style={{
-            opacity: fadeAnimA,
             backgroundColor: "#fff",
             borderRadius: 20,
             display: "flex",
             flexDirection: "column",
             position: "relative",
+            transform: [{ translateY: allContent }],
           }}
         >
-          <Text className="px-6 mx-4 mt-4">此金币由名下所有ID构成</Text>
           <View
             style={{
-              borderRadius: 20,
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              position: "relative",
-              marginTop: 10,
               backgroundColor: "#fff",
-              marginHorizontal: 20,
+              borderBottomColor: "#f2f2f2",
+              borderBottomWidth: 2,
+            }}
+          >
+            <Image
+              className="m-1"
+              source={require("@assets/images/tips.png")}
+              style={{ width: 20, height: 20, borderRadius: 50 }}
+            />
+            <Text>因提现人数众多，每月限提现2次，次月刷新。</Text>
+          </View>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#fff",
+              borderBottomColor: "#f2f2f2",
+              borderBottomWidth: 2,
+            }}
+          >
+            <Image
+              className="m-1"
+              source={require("@assets/images/tips.png")}
+              style={{ width: 20, height: 20, borderRadius: 50 }}
+            />
+            <Text>(佣金发放时间为8:00-22:00)</Text>
+          </View>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#fff",
+              borderBottomColor: "#f2f2f2",
+              borderBottomWidth: 2,
+            }}
+          >
+            <Image
+              className="m-1"
+              source={require("@assets/images/tips.png")}
+              style={{ width: 20, height: 20, borderRadius: 50 }}
+            />
+            <Text>此金币由名下所有ID构成</Text>
+          </View>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#fff",
+              borderBottomColor: "#f2f2f2",
+              borderBottomWidth: 2,
             }}
           >
             <Image
@@ -262,13 +300,12 @@ export function Mine() {
           <View
             style={{
               backgroundColor: "#fff",
-              margin: 20,
-              borderRadius: 20,
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
               position: "relative",
-              marginTop: 10,
+              borderBottomColor: "#f2f2f2",
+              borderBottomWidth: 2,
             }}
           >
             <Image
@@ -308,9 +345,6 @@ export function Mine() {
               </Pressable>
             </View>
           </View>
-          <Text className="px-6 mx-4">
-            因提现人数众多，每月限提现2次，次月刷新。(佣金发放时间为8:00-22:00)
-          </Text>
           {options.map((item, index) => (
             <View
               key={index}
@@ -331,14 +365,13 @@ export function Mine() {
         <Animated.View
           style={{
             display: "flex",
-            opacity: fadeAnimB,
             position: "absolute",
-            transform: [{ translateY: topB }],
+            transform: [{ translateY: withdraw }],
             width: "100%",
             height: "100%",
             borderRadius: 20,
             backgroundColor: "#fff",
-            zIndex: 9999,
+            zIndex: 3,
           }}
         >
           {isWithdraw && (
@@ -347,7 +380,7 @@ export function Mine() {
                 placeholderTextColor="#d1d5db"
                 className={classNames("  py-4  text-lg -mt-2 flex-grow pl-4")}
                 style={{ color: "#1e90ff" }}
-                placeholder="请输入提现金额"
+                placeholder="请输入提现金额(必须为1000的整数倍)"
                 value={coin}
                 keyboardType="numeric" // 显示数字键盘
                 onChangeText={(text) => {
@@ -375,16 +408,23 @@ export function Mine() {
                       visibilityTime: 1000,
                     })
                     return
-                  } else if (Number(coin) < 10) {
+                  } else if (Number(coin) < 1000) {
                     Toast.show({
                       type: "error",
                       text1: "金币太少，请先浏览",
                       visibilityTime: 500,
                     })
                     return
+                  } else if (Number(coin) % 1000 !== 0) {
+                    Toast.show({
+                      type: "error",
+                      text1: "提现金额必须为1000的整数倍",
+                      visibilityTime: 500,
+                    })
+                    return
                   }
                   await mutateAsync({
-                    withdrawalCoin: Number(coin) >= 300 ? 300 : Number(coin),
+                    withdrawalCoin: Number(coin),
                   })
                   setCoin("")
                   Toast.show({
@@ -436,6 +476,7 @@ export function Mine() {
               padding: 10,
             }}
           >
+            {withdrawList?.result?.length === 0 && <Text>暂无提现记录</Text>}
             {withdrawList?.result?.map((item: any) => (
               <View
                 key={item.recordId}
@@ -469,7 +510,7 @@ export function Mine() {
                     borderRadius: 8,
                   }}
                 >
-                  <Text>{item.payStatus === 1 ? "取消申请" : "成功支付"}</Text>
+                  <Text>{item.payStatus === 1 ? "取消申请" : "已完成"}</Text>
                 </Pressable>
               </View>
             ))}
@@ -606,6 +647,11 @@ export function Mine() {
                   duration: 500,
                   useNativeDriver: true,
                 }),
+                Animated.timing(allContent, {
+                  toValue: 0,
+                  duration: 500,
+                  useNativeDriver: true,
+                }),
               ]).start()
               setIsShowButton(true)
             }}
@@ -643,6 +689,11 @@ export function Mine() {
               Animated.parallel([
                 Animated.timing(meInfo, {
                   toValue: 0,
+                  duration: 500,
+                  useNativeDriver: true,
+                }),
+                Animated.timing(allContent, {
+                  toValue: 999,
                   duration: 500,
                   useNativeDriver: true,
                 }),

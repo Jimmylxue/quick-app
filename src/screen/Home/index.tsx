@@ -1,16 +1,17 @@
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs"
 import { getProductList } from "@src/api/app"
+import { getCommonMessageList } from "@src/api/app/message"
 import { fetchCoin, getPlantForm } from "@src/api/app/user"
 import { fetchGetCoin } from "@src/api/app/withdraw"
-import { useUser } from "@src/hooks/useAuth"
 import { useEffect, useRef, useState } from "react"
 import {
   Animated,
   BackHandler,
   Image,
+  StyleSheet,
   Pressable,
   Text,
   View,
+  Dimensions,
 } from "react-native"
 import Toast from "react-native-toast-message"
 // 基于expo的项目使用expo install react-native-webview 安装该包
@@ -50,6 +51,8 @@ export function Home() {
   const fadeAnimA = useRef(new Animated.Value(0)).current
   const { data: platformList } = getPlantForm() as any
   const { data: coin, refetch: getCoinFetch } = fetchCoin() as any
+  const { data: commonMsg = [] } = getCommonMessageList() as any
+
   const currentTime = useRef(+new Date())
   useEffect(() => {
     if ((+new Date() - currentTime.current) / 1000 / 60 > 1) {
@@ -128,6 +131,53 @@ export function Home() {
     }
   }, [uri, visitTime, isLoading, isShowLoadingImg])
 
+  const styles = StyleSheet.create({
+    container: {
+      width: "100%",
+      overflow: "hidden", // 防止内容溢出
+      backgroundColor: "#f5f5f5",
+      paddingVertical: 10,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    animatedContainer: {
+      flexDirection: "row",
+    },
+    messageBox: {
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    message: {
+      fontSize: 16,
+      color: "#333",
+    },
+    placeholder: {
+      fontSize: 14,
+      color: "#999",
+    },
+  })
+  const screenWidth = 250 // 获取屏幕宽度
+  const scrollX = useRef(new Animated.Value(0)).current // 初始化动画值
+
+  useEffect(() => {
+    if (commonMsg?.result?.length > 0) {
+      const messageContainerWidth = screenWidth * commonMsg?.result?.length
+
+      // 启动无缝横向滚动动画
+      const startScroll = () => {
+        Animated.loop(
+          Animated.timing(scrollX, {
+            toValue: -messageContainerWidth, // 滚动到所有消息的末尾
+            duration: commonMsg?.result?.length * 5000, // 根据消息数量动态计算总时间
+            useNativeDriver: true, // 使用原生驱动
+          })
+        ).start()
+      }
+
+      startScroll()
+    }
+  }, [commonMsg?.result, scrollX, screenWidth])
+
   return (
     <View
       style={{
@@ -151,6 +201,7 @@ export function Home() {
       >
         {platformList?.map((item: any) => (
           <Pressable
+            key={item?.linkTypeId}
             style={{
               backgroundColor: "rgba(0,0,0,.1)",
               padding: 10,
@@ -254,6 +305,30 @@ export function Home() {
           <Text className="text-center">开始</Text>
         </Pressable>
       </View>
+      {commonMsg?.result?.length > 0 && (
+        <Animated.View
+          style={[
+            styles.animatedContainer,
+            {
+              transform: [{ translateX: scrollX }],
+              width: screenWidth * commonMsg?.result.length * 2, // 容器宽度为消息宽度的两倍（实现无缝循环）
+              borderTopColor: "#eee",
+              borderTopWidth: 1,
+            },
+          ]}
+        >
+          {[...commonMsg?.result, ...commonMsg?.result].map(
+            (message, index) => (
+              <View
+                key={index}
+                style={[styles.messageBox, { width: screenWidth }]}
+              >
+                <Text style={styles.message}>{message?.content}</Text>
+              </View>
+            )
+          )}
+        </Animated.View>
+      )}
       {/* {!isLoading && !isOtherPage && ( */}
       {!isStop && !isLoading && (
         <Text

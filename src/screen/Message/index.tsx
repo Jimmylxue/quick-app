@@ -1,56 +1,28 @@
-import {
-  fetchReadMessage,
-  getCommonMessageList,
-  getMessageList
-} from "@src/api/app/message"
+import { fetchReadMessage, getMessageList } from "@src/api/app/message"
 import moment from "moment"
-import { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import {
   Animated,
   Image,
   Pressable,
   ScrollView,
-  StyleSheet,
   Text,
-  View
+  View,
 } from "react-native"
 
 export default function Message() {
   const { mutateAsync: readMsg } = fetchReadMessage()
   const { data, refetch: refetchMessage } = getMessageList()
   const [unreadCount, setUnreadCount] = useState({ msg: 0, sys: 0 })
-  const { data: commonMsg = [] } = getCommonMessageList() as any
   const fadeAnimA = useRef(new Animated.Value(0)).current
   const fadeAnimB = useRef(new Animated.Value(999)).current
   const [msgType, setMsgType] = useState(1)
-
-  const translateY = useRef(new Animated.Value(0)).current
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const duration = 3000
-  useEffect(() => {
-    if (commonMsg?.result?.length === 0) return
-    const interval = setInterval(() => {
-      Animated.timing(translateY, {
-        toValue: -50, // 假设每条消息高度为 50
-        duration: 500, // 滚动动画时长
-        useNativeDriver: true
-      }).start(() => {
-        // 滚动完成后，重置位置并切换到下一条消息
-        translateY.setValue(0)
-        setCurrentIndex(
-          (prevIndex) => (prevIndex + 1) % commonMsg?.result?.length
-        )
-      })
-    }, duration)
-
-    return () => clearInterval(interval) // 清除定时器
-  }, [commonMsg, translateY, duration])
 
   useEffect(() => {
     if (data?.length > 0) {
       const unread = {
         sys: 0,
-        msg: 0
+        msg: 0,
       }
       data.forEach((item: any) => {
         if (item?.letter?.platform === 1 && item?.status === 1) {
@@ -70,13 +42,13 @@ export default function Message() {
       Animated.timing(fadeAnimA, {
         toValue: 999, // A 渐隐
         duration: 500,
-        useNativeDriver: true
+        useNativeDriver: true,
       }),
       Animated.timing(fadeAnimB, {
         toValue: 50, // B 渐显
         duration: 500,
-        useNativeDriver: true
-      })
+        useNativeDriver: true,
+      }),
     ]).start()
   }
 
@@ -86,85 +58,22 @@ export default function Message() {
       Animated.timing(fadeAnimA, {
         toValue: 0, // A 渐显
         duration: 500,
-        useNativeDriver: true
+        useNativeDriver: true,
       }),
       Animated.timing(fadeAnimB, {
         toValue: 999, // B 渐隐
         duration: 500,
-        useNativeDriver: true
-      })
+        useNativeDriver: true,
+      }),
     ]).start(() => setMsgType(1))
   }
 
-  const styles = StyleSheet.create({
-    container: {
-      height: 100, // 公告栏高度
-      overflow: "hidden",
-      justifyContent: "center",
-      backgroundColor: "#fff",
-      marginTop: 10,
-      marginLeft: 20,
-      marginRight: 20,
-      borderRadius: 20
-    },
-    animatedContainer: {
-      height: 100, // 容器高度，2 条消息的高度
-      justifyContent: "flex-start"
-    },
-    message: {
-      height: 50, // 单条消息的高度
-      lineHeight: 50, // 垂直居中
-      fontSize: 16,
-      textAlign: "center",
-      color: "#333"
-    }
-  })
   return (
     <>
       <Animated.Text
         className="mt-16 pl-8 font-bold text-2xl"
         style={{
-          transform: [{ translateY: fadeAnimA }]
-        }}
-      >
-        公告栏
-      </Animated.Text>
-      {commonMsg?.result?.length > 0 && (
-        <Animated.View
-          style={{
-            ...styles.container,
-            transform: [{ translateY: fadeAnimA }]
-          }}
-        >
-          <Animated.View
-            style={[
-              styles.animatedContainer,
-              {
-                transform: [{ translateY }]
-              }
-            ]}
-          >
-            <Text style={styles.message}>
-              {commonMsg?.result?.[currentIndex]?.content}
-            </Text>
-            <Text style={styles.message}>
-              {
-                commonMsg?.result[
-                  (currentIndex + 1) % commonMsg?.result?.length
-                ]?.content
-              }
-            </Text>
-            {/* <Text style={styles.message}>{msgList[currentIndex]}</Text>
-            <Text style={styles.message}>
-              {msgList[(currentIndex + 1) % msgList.length]}
-            </Text> */}
-          </Animated.View>
-        </Animated.View>
-      )}
-      <Animated.Text
-        className="mt-16 pl-8 font-bold text-2xl"
-        style={{
-          transform: [{ translateY: fadeAnimA }]
+          transform: [{ translateY: fadeAnimA }],
         }}
       >
         消息
@@ -179,14 +88,14 @@ export default function Message() {
           marginTop: 20,
           marginLeft: 20,
           marginRight: 20,
-          transform: [{ translateY: fadeAnimA }]
+          transform: [{ translateY: fadeAnimA }],
         }}
       >
         <View
           style={{
             borderBottomColor: "#eee",
             borderBottomWidth: 2,
-            padding: 20
+            padding: 20,
           }}
         >
           <Pressable
@@ -211,7 +120,7 @@ export default function Message() {
                   width: 20,
                   height: 20,
                   borderRadius: 10,
-                  textAlign: "center"
+                  textAlign: "center",
                 }}
               >
                 {unreadCount?.sys}
@@ -223,7 +132,7 @@ export default function Message() {
           style={{
             borderBottomColor: "#eee",
             borderBottomWidth: 2,
-            padding: 20
+            padding: 20,
           }}
         >
           <Pressable
@@ -248,7 +157,7 @@ export default function Message() {
                   width: 20,
                   height: 20,
                   borderRadius: 10,
-                  textAlign: "center"
+                  textAlign: "center",
                 }}
               >
                 {unreadCount?.msg}
@@ -263,10 +172,16 @@ export default function Message() {
           height: "90%",
           width: "90%",
           marginLeft: "5%",
-          transform: [{ translateY: fadeAnimB }]
+          transform: [{ translateY: fadeAnimB }],
         }}
       >
         <ScrollView style={{ flex: 1, width: "100%" }}>
+          {data?.filter((item: any) => {
+            if (item.letter.platform === msgType) {
+              return true
+            }
+            return false
+          }).length === 0 && <Text>暂无消息</Text>}
           {data
             ?.filter((item: any) => {
               if (item.letter.platform === msgType) {
@@ -294,6 +209,12 @@ export default function Message() {
                     ></View>
                   )}
                 </View>
+                {item.letter?.imgUrl && (
+                  <Image
+                    source={{ uri: item.letter.imgUrl }}
+                    className="w-full my-2 h-96"
+                  />
+                )}
                 <Text className="px-8">{item.letter.content}</Text>
                 <Text className="text-right mr-4">
                   {moment(item.createdTime).format("YYYY-MM-DD HH:mm:ss")}
@@ -308,7 +229,7 @@ export default function Message() {
             left: "50%",
             zIndex: 2,
             padding: 10,
-            transform: [{ translateX: -25 }]
+            transform: [{ translateX: -25 }],
           }}
           onPress={async () => {
             await refetchMessage()
@@ -323,7 +244,7 @@ export default function Message() {
               borderRadius: 18,
               textAlign: "center",
               lineHeight: 36,
-              color: "white"
+              color: "white",
             }}
           >
             X
