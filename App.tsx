@@ -1,14 +1,12 @@
 import './src/styles/global.css'
-import { RootNavigator } from '@src/navigation/RootNavigator'
 import { ComposeProviders } from '@src/components/ComposeProviders'
-import { ApiProvider } from '@src/api/ApiProvider'
-import { NavigationContainer } from '@src/navigation/NavigationContainer'
 import { ErrorHandler } from '@src/components/ErrorHandler'
 import { RootSiblingParent } from 'react-native-root-siblings'
 import Toast from 'react-native-toast-message'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
 import { useFonts } from 'expo-font'
+import { NumberInputDemo } from '@src/components/Content'
 SplashScreen.preventAutoHideAsync()
 
 export default function App() {
@@ -25,15 +23,8 @@ export default function App() {
 	}, [loaded])
 
 	return (
-		<ComposeProviders
-			components={[
-				RootSiblingParent,
-				ErrorHandler,
-				ApiProvider,
-				NavigationContainer,
-			]}
-		>
-			<RootNavigator />
+		<ComposeProviders components={[RootSiblingParent, ErrorHandler]}>
+			<NumberInputDemo />
 			<Toast topOffset={60} />
 		</ComposeProviders>
 	)
