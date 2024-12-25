@@ -18,8 +18,8 @@ type TProps = {
 }
 
 export const Login = observer(({ changePage }: TProps) => {
-  const [phone, setPhone] = useState<string>("173003")
-  const [password, setPassword] = useState<string>("123123")
+  const [phone, setPhone] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
 
   const { login } = useUser()
 
