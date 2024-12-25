@@ -29,11 +29,12 @@ function randomNum(num = 10) {
 function getCoin(coin: number) {
   Toast.show({
     type: "success",
-    text1: `获得${coin}金币`,
+    text1: `浏览获得金币：${coin}`,
     visibilityTime: 2000,
     text1Style: {
       color: "red",
       fontSize: 20,
+      textAlign: "center",
     },
   })
 }
@@ -46,7 +47,6 @@ export function Home() {
   const [isStop, setIsStop] = useState<boolean>(false)
   const [visitTime, setVisitTime] = useState(10)
   const { mutateAsync: reqCoin } = fetchGetCoin()
-  const [isShowLoadingImg, setIsShowLoadingImg] = useState(false)
   const [isAutoClick, setIsAutoClick] = useState(false)
   const fadeAnimA = useRef(new Animated.Value(0)).current
   const { data: platformList } = getPlantForm() as any
@@ -55,7 +55,7 @@ export function Home() {
 
   const currentTime = useRef(+new Date())
   useEffect(() => {
-    if ((+new Date() - currentTime.current) / 1000 / 60 > 1) {
+    if ((+new Date() - currentTime.current) / 1000 / 60 / 60 > 24) {
       setIsAutoClick(false)
     }
   }, [coin])
@@ -72,12 +72,14 @@ export function Home() {
     })();
   `
   useEffect(() => {
-    setIsShowLoadingImg(true)
     setIsLoading(true)
     refetch()
   }, [linkType, isAutoClick])
 
   useEffect(() => {
+    if (!isAutoClick) {
+      return
+    }
     if (data?.data?.length > 0) {
       setIsStop(false)
       const randomData = data?.data[randomNum(data?.data?.length)]
@@ -86,9 +88,8 @@ export function Home() {
     } else {
       setIsStop(true)
       setUrl(null)
-      setIsShowLoadingImg(false)
     }
-  }, [data])
+  }, [data, isAutoClick])
 
   useEffect(() => {
     const onBackPress = () => {
@@ -115,7 +116,7 @@ export function Home() {
   }, [isStop])
 
   useEffect(() => {
-    if (isLoading || isShowLoadingImg) {
+    if (isLoading) {
       return
     }
     if (visitTime > 0) {
@@ -129,7 +130,7 @@ export function Home() {
         refetch()
       }
     }
-  }, [uri, visitTime, isLoading, isShowLoadingImg])
+  }, [uri, visitTime, isLoading, isAutoClick])
 
   const styles = StyleSheet.create({
     container: {
@@ -156,7 +157,7 @@ export function Home() {
       color: "#999",
     },
   })
-  const screenWidth = 250 // 获取屏幕宽度
+  const screenWidth = 500 // 获取屏幕宽度
   const scrollX = useRef(new Animated.Value(0)).current // 初始化动画值
 
   useEffect(() => {
@@ -177,7 +178,11 @@ export function Home() {
       startScroll()
     }
   }, [commonMsg?.result, scrollX, screenWidth])
-
+  useEffect(() => {
+    console.log(
+      platformList?.find((item: any) => item.linkTypeId === linkType)?.mainImage
+    )
+  }, [isAutoClick])
   return (
     <View
       style={{
@@ -214,7 +219,7 @@ export function Home() {
                 Toast.show({
                   type: "error",
                   text1: "该平台暂未开放",
-                  visibilityTime: 500,
+                  visibilityTime: 1500,
                 })
                 return
               }
@@ -267,12 +272,22 @@ export function Home() {
           paddingHorizontal: 20,
         }}
       >
-        <View className="w-32 flex flex-row items-center">
+        <View
+          className="w-32 flex flex-row items-center"
+          // style={{
+          //   borderColor: "#3db2f5",
+          //   borderWidth: 1,
+          //   borderRadius: 50,
+          //   padding: 5,
+          // }}
+        >
           <Image
             source={require("@assets/images/coin.png")}
-            style={{ width: 30, height: 30, borderRadius: 50 }}
+            style={{ width: 20, height: 20, borderRadius: 50 }}
           />
-          <Text>{coin as any}</Text>
+          <Text style={{ color: "#3db2f5" }} className="text-xl">
+            {coin as any}
+          </Text>
         </View>
         <Pressable
           className="w-32 text-center flex flex-row items-center justify-center"
@@ -293,16 +308,34 @@ export function Home() {
             ]).start()
           }}
         >
-          <Text style={{ color: "#3db2f5" }}>
+          <Text
+            style={{
+              color: "#3db2f5",
+            }}
+          >
             {platformList?.find((item: any) => item.linkTypeId === linkType)
               ?.name || ""}
           </Text>
         </Pressable>
         <Pressable
-          className="w-32 text-center"
-          onPress={() => setIsAutoClick(true)}
+          className="w-32 flex flex-row justify-end"
+          onPress={() => {
+            setIsAutoClick(!isAutoClick)
+          }}
         >
-          <Text className="text-center">开始</Text>
+          <Text
+            className="text-center "
+            style={{
+              borderColor: "#3db2f5",
+              borderWidth: 1,
+              borderRadius: 50,
+              padding: 5,
+              color: "#3db2f5",
+              width: 60,
+            }}
+          >
+            {isAutoClick ? "暂停" : "开始"}
+          </Text>
         </Pressable>
       </View>
       {commonMsg?.result?.length > 0 && (
@@ -370,9 +403,17 @@ export function Home() {
           </Text>
         </Pressable>
       )} */}
-      {!uri?.fullLink ? (
+      {!isAutoClick ? (
         <View className=" justify-center flex-row mt-[180]">
-          <Image source={require("@src/assets/images/not.png")} />
+          <Image
+            source={{
+              uri: platformList?.find(
+                (item: any) => item.linkTypeId === linkType
+              )?.mainImage,
+            }}
+            width={300}
+            height={300}
+          />
         </View>
       ) : (
         <WebView
@@ -382,27 +423,17 @@ export function Home() {
           }}
           injectedJavaScript={handleInjectJavaScript}
           onShouldStartLoadWithRequest={(event: any) => {
-            setIsShowLoadingImg(true)
             if (event.url.includes("login")) {
               setIsStop(true)
-              setIsShowLoadingImg(false)
             }
             return true
           }}
           onLoad={() => {
             setIsLoading(true)
-            setIsShowLoadingImg(true)
           }}
           onLoadEnd={() => {
             setIsLoading(false)
-            setIsShowLoadingImg(false)
           }}
-        />
-      )}
-      {isShowLoadingImg && (
-        <Image
-          source={require("@assets/images/loading.gif")}
-          style={{ position: "absolute", top: 50, left: 50 }}
         />
       )}
     </View>

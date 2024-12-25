@@ -91,7 +91,7 @@ export default function Message() {
           transform: [{ translateY: fadeAnimA }],
         }}
       >
-        <View
+        {/* <View
           style={{
             borderBottomColor: "#eee",
             borderBottomWidth: 2,
@@ -127,7 +127,7 @@ export default function Message() {
               </Text>
             )}
           </Pressable>
-        </View>
+        </View> */}
         <View
           style={{
             borderBottomColor: "#eee",
@@ -209,13 +209,13 @@ export default function Message() {
                     ></View>
                   )}
                 </View>
+                <Text className="px-8">{item.letter.content}</Text>
                 {item.letter?.imgUrl && (
                   <Image
                     source={{ uri: item.letter.imgUrl }}
                     className="w-full my-2 h-96"
                   />
                 )}
-                <Text className="px-8">{item.letter.content}</Text>
                 <Text className="text-right mr-4">
                   {moment(item.createdTime).format("YYYY-MM-DD HH:mm:ss")}
                 </Text>

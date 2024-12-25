@@ -20,7 +20,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/talk.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#fe5900"
       },
       "permissions": [
         "android.permission.CAMERA",

@@ -237,7 +237,7 @@ export function Mine() {
               alignItems: "center",
               backgroundColor: "#fff",
               borderBottomColor: "#f2f2f2",
-              borderBottomWidth: 2,
+              borderBottomWidth: 4,
             }}
           >
             <Image
@@ -254,7 +254,7 @@ export function Mine() {
               alignItems: "center",
               backgroundColor: "#fff",
               borderBottomColor: "#f2f2f2",
-              borderBottomWidth: 2,
+              borderBottomWidth: 4,
             }}
           >
             <Image
@@ -271,7 +271,7 @@ export function Mine() {
               alignItems: "center",
               backgroundColor: "#fff",
               borderBottomColor: "#f2f2f2",
-              borderBottomWidth: 2,
+              borderBottomWidth: 4,
             }}
           >
             <Image
@@ -288,7 +288,7 @@ export function Mine() {
               alignItems: "center",
               backgroundColor: "#fff",
               borderBottomColor: "#f2f2f2",
-              borderBottomWidth: 2,
+              borderBottomWidth: 4,
             }}
           >
             <Image
@@ -305,7 +305,7 @@ export function Mine() {
               alignItems: "center",
               position: "relative",
               borderBottomColor: "#f2f2f2",
-              borderBottomWidth: 2,
+              borderBottomWidth: 4,
             }}
           >
             <Image
@@ -350,7 +350,7 @@ export function Mine() {
               key={index}
               style={{
                 borderBottomColor: "#eee",
-                borderBottomWidth: 2,
+                borderBottomWidth: 4,
                 padding: 20,
               }}
             >
@@ -616,11 +616,12 @@ export function Mine() {
             position: "absolute",
             transform: [{ translateY: meInfo }],
             width: "100%",
-            height: 250,
+            height: 500,
             borderRadius: 20,
             backgroundColor: "#fff",
             zIndex: 999,
             padding: 20,
+            paddingBottom: 20,
           }}
         >
           <ScrollView
@@ -630,7 +631,7 @@ export function Mine() {
               padding: 10,
             }}
           >
-            <Text>{text}</Text>
+            <Text>{text + "\n"}</Text>
           </ScrollView>
           <Pressable
             style={{

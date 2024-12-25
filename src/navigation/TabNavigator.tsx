@@ -1,14 +1,15 @@
 // @ts-nocheck
 
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { SafeAreaView, StatusBar } from "react-native"
+import { Pressable, SafeAreaView, StatusBar, Text } from "react-native"
 import { Home } from "@src/screen/Home"
 import Message from "@src/screen/Message"
 import { Mine } from "@src/screen/Mine"
 import { fetchHeart } from "@src/api/app/user"
 import { NIcon } from "@src/components/Icon/NIcon"
 import { useNavigation } from "@react-navigation/native"
+import { getMessageList } from "@src/api/app/message"
 const Tab = createBottomTabNavigator()
 
 export const TabNavigator = () => {
@@ -22,6 +23,26 @@ export const TabNavigator = () => {
     }, 1000 * 15)
     return () => clearInterval(timer)
   }, [])
+  const { data, refetch: refetchMessage } = getMessageList()
+  const [unreadCount, setUnreadCount] = useState({ msg: 0, sys: 0 })
+  useEffect(() => {
+    if (data?.length > 0) {
+      const unread = {
+        sys: 0,
+        msg: 0,
+      }
+      data.forEach((item: any) => {
+        if (item?.letter?.platform === 1 && item?.status === 1) {
+          unread.sys += 1
+        }
+        if (item?.letter?.platform === 3 && item?.status === 1) {
+          unread.msg += 1
+        }
+      })
+      setUnreadCount(unread)
+    }
+  }, [data])
+
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -33,7 +54,10 @@ export const TabNavigator = () => {
             headerShown: false,
             tabBarLabelStyle: {
               fontSize: 12,
-              marginBottom: 6,
+            },
+            tabBarStyle: {
+              height: 60,
+              paddingBottom: 6, // 控制内部内容的间距
             },
             tabBarIcon: ({ color, size }) => {
               let iconName
@@ -45,13 +69,40 @@ export const TabNavigator = () => {
                 iconName = "user"
               }
               return (
-                <NIcon
-                  onPress={() => navigation.navigate(route.name as any)}
-                  iconType="Entypo"
-                  name={iconName}
-                  color={color}
-                  size={18}
-                />
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate(route.name as any)
+                  }}
+                  className="relative "
+                >
+                  <NIcon
+                    iconType="Entypo"
+                    name={iconName}
+                    color={color}
+                    size={24}
+                    onPress={() => {
+                      navigation.navigate(route.name as any)
+                    }}
+                    style={{
+                      marginBottom: -8, // 向下微调图标的位置
+                    }}
+                  />
+                  {unreadCount?.msg > 0 && route.name === "Message" && (
+                    <Text
+                      className="absolute -top-1 -right-3"
+                      style={{
+                        backgroundColor: "red",
+                        width: 20,
+                        height: 20,
+                        borderRadius: 50,
+                        textAlign: "center",
+                        color: "#fff",
+                      }}
+                    >
+                      {unreadCount.msg}
+                    </Text>
+                  )}
+                </Pressable>
               )
             },
           })}

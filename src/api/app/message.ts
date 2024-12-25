@@ -5,6 +5,7 @@ export function getMessageList() {
   return useQuery<any, any, any>({
     queryKey: ["messageList"],
     queryFn: async () => http.post("/letter/user/record"),
+    refetchInterval: 1000 * 60,
   })
 }
 
