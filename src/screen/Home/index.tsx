@@ -11,7 +11,7 @@ import {
   Pressable,
   Text,
   View,
-  Dimensions,
+  Dimensions
 } from "react-native"
 import Toast from "react-native-toast-message"
 // 基于expo的项目使用expo install react-native-webview 安装该包
@@ -19,7 +19,7 @@ import { WebView } from "react-native-webview"
 
 export const LINK_TYPE = {
   TaoBao: 1,
-  Amazon: 2,
+  Amazon: 2
 }
 
 function randomNum(num = 10) {
@@ -34,8 +34,8 @@ function getCoin(coin: number) {
     text1Style: {
       color: "red",
       fontSize: 20,
-      textAlign: "center",
-    },
+      textAlign: "center"
+    }
   })
 }
 
@@ -88,6 +88,7 @@ export function Home() {
     } else {
       setIsStop(true)
       setUrl(null)
+      setIsAutoClick(false)
     }
   }, [data, isAutoClick])
 
@@ -139,23 +140,23 @@ export function Home() {
       backgroundColor: "#f5f5f5",
       paddingVertical: 10,
       justifyContent: "center",
-      alignItems: "center",
+      alignItems: "center"
     },
     animatedContainer: {
-      flexDirection: "row",
+      flexDirection: "row"
     },
     messageBox: {
       justifyContent: "center",
-      alignItems: "center",
+      alignItems: "center"
     },
     message: {
       fontSize: 16,
-      color: "#333",
+      color: "#333"
     },
     placeholder: {
       fontSize: 14,
-      color: "#999",
-    },
+      color: "#999"
+    }
   })
   const screenWidth = 500 // 获取屏幕宽度
   const scrollX = useRef(new Animated.Value(0)).current // 初始化动画值
@@ -170,7 +171,7 @@ export function Home() {
           Animated.timing(scrollX, {
             toValue: -messageContainerWidth, // 滚动到所有消息的末尾
             duration: commonMsg?.result?.length * 5000, // 根据消息数量动态计算总时间
-            useNativeDriver: true, // 使用原生驱动
+            useNativeDriver: true // 使用原生驱动
           })
         ).start()
       }
@@ -178,18 +179,13 @@ export function Home() {
       startScroll()
     }
   }, [commonMsg?.result, scrollX, screenWidth])
-  useEffect(() => {
-    console.log(
-      platformList?.find((item: any) => item.linkTypeId === linkType)?.mainImage
-    )
-  }, [isAutoClick])
   return (
     <View
       style={{
         position: "relative",
         flex: 1,
         paddingTop: 40,
-        backgroundColor: "#fff",
+        backgroundColor: "#fff"
       }}
     >
       <Animated.View
@@ -201,7 +197,7 @@ export function Home() {
           top: 0,
           transform: [{ translateY: fadeAnimA }],
           zIndex: 999,
-          padding: 20,
+          padding: 20
         }}
       >
         {platformList?.map((item: any) => (
@@ -211,7 +207,7 @@ export function Home() {
               backgroundColor: "rgba(0,0,0,.1)",
               padding: 10,
               borderRadius: 10,
-              marginVertical: 10,
+              marginVertical: 10
             }}
             className="relative"
             onPress={() => {
@@ -219,7 +215,7 @@ export function Home() {
                 Toast.show({
                   type: "error",
                   text1: "该平台暂未开放",
-                  visibilityTime: 1500,
+                  visibilityTime: 1500
                 })
                 return
               }
@@ -228,8 +224,8 @@ export function Home() {
                 Animated.timing(fadeAnimA, {
                   toValue: 999, // A 渐显
                   duration: 500,
-                  useNativeDriver: true,
-                }),
+                  useNativeDriver: true
+                })
               ]).start()
             }}
           >
@@ -252,7 +248,7 @@ export function Home() {
                 width: 10,
                 height: 10,
                 borderRadius: 10,
-                transform: [{ translateX: -25 }, { translateY: -20 }],
+                transform: [{ translateX: -25 }, { translateY: -20 }]
               }}
             ></View>
           </Pressable>
@@ -269,7 +265,7 @@ export function Home() {
           width: "100%",
           zIndex: 3,
           height: 40,
-          paddingHorizontal: 20,
+          paddingHorizontal: 20
         }}
       >
         <View
@@ -295,7 +291,7 @@ export function Home() {
             borderColor: "#3db2f5",
             borderWidth: 1,
             borderRadius: 50,
-            padding: 5,
+            padding: 5
           }}
           onPress={() => {
             setLinkType(-1)
@@ -303,14 +299,14 @@ export function Home() {
               Animated.timing(fadeAnimA, {
                 toValue: 0, // A 渐显
                 duration: 500,
-                useNativeDriver: true,
-              }),
+                useNativeDriver: true
+              })
             ]).start()
           }}
         >
           <Text
             style={{
-              color: "#3db2f5",
+              color: "#3db2f5"
             }}
           >
             {platformList?.find((item: any) => item.linkTypeId === linkType)
@@ -331,7 +327,7 @@ export function Home() {
               borderRadius: 50,
               padding: 5,
               color: "#3db2f5",
-              width: 60,
+              width: 60
             }}
           >
             {isAutoClick ? "暂停" : "开始"}
@@ -346,8 +342,8 @@ export function Home() {
               transform: [{ translateX: scrollX }],
               width: screenWidth * commonMsg?.result.length * 2, // 容器宽度为消息宽度的两倍（实现无缝循环）
               borderTopColor: "#eee",
-              borderTopWidth: 1,
-            },
+              borderTopWidth: 1
+            }
           ]}
         >
           {[...commonMsg?.result, ...commonMsg?.result].map(
@@ -374,7 +370,7 @@ export function Home() {
             padding: 20,
             fontSize: 20,
             color: "white",
-            borderRadius: 50,
+            borderRadius: 50
           }}
         >
           {visitTime}
@@ -409,7 +405,7 @@ export function Home() {
             source={{
               uri: platformList?.find(
                 (item: any) => item.linkTypeId === linkType
-              )?.mainImage,
+              )?.mainImage
             }}
             width={300}
             height={300}
@@ -419,7 +415,7 @@ export function Home() {
         <WebView
           style={{ zIndex: -1 }}
           source={{
-            uri: uri?.fullLink,
+            uri: uri?.fullLink
           }}
           injectedJavaScript={handleInjectJavaScript}
           onShouldStartLoadWithRequest={(event: any) => {

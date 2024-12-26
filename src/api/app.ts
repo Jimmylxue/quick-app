@@ -10,5 +10,6 @@ export function getProductList(data: any, linkType: number) {
       return { data: res, date: +new Date() }
     },
     initialData: [],
+    retry: true
   })
 }

@@ -29,7 +29,7 @@ export const TabNavigator = () => {
     if (data?.length > 0) {
       const unread = {
         sys: 0,
-        msg: 0,
+        msg: 0
       }
       data.forEach((item: any) => {
         if (item?.letter?.platform === 1 && item?.status === 1) {
@@ -53,11 +53,11 @@ export const TabNavigator = () => {
             tabBarInactiveTintColor: "#3db2f5",
             headerShown: false,
             tabBarLabelStyle: {
-              fontSize: 12,
+              fontSize: 12
             },
             tabBarStyle: {
               height: 60,
-              paddingBottom: 6, // 控制内部内容的间距
+              paddingBottom: 6 // 控制内部内容的间距
             },
             tabBarIcon: ({ color, size }) => {
               let iconName
@@ -84,7 +84,7 @@ export const TabNavigator = () => {
                       navigation.navigate(route.name as any)
                     }}
                     style={{
-                      marginBottom: -8, // 向下微调图标的位置
+                      marginBottom: -8 // 向下微调图标的位置
                     }}
                   />
                   {unreadCount?.msg > 0 && route.name === "Message" && (
@@ -96,7 +96,7 @@ export const TabNavigator = () => {
                         height: 20,
                         borderRadius: 50,
                         textAlign: "center",
-                        color: "#fff",
+                        color: "#fff"
                       }}
                     >
                       {unreadCount.msg}
@@ -104,14 +104,14 @@ export const TabNavigator = () => {
                   )}
                 </Pressable>
               )
-            },
+            }
           })}
         >
           <Tab.Screen
             name="Home"
             options={{
               tabBarLabel: "首页",
-              unmountOnBlur: true,
+              unmountOnBlur: true
             }}
             component={Home}
           />
@@ -119,7 +119,7 @@ export const TabNavigator = () => {
             name="Message"
             options={{
               tabBarLabel: "消息",
-              unmountOnBlur: true,
+              unmountOnBlur: true
             }}
             component={Message}
           />
@@ -127,7 +127,7 @@ export const TabNavigator = () => {
             name="Mine"
             options={{
               tabBarLabel: "我的",
-              unmountOnBlur: true,
+              unmountOnBlur: true
             }}
             component={Mine}
           />
