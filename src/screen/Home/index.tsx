@@ -1,3 +1,4 @@
+import React from "react"
 import { getProductList } from "@src/api/app"
 import { getCommonMessageList } from "@src/api/app/message"
 import { fetchCoin, getPlantForm } from "@src/api/app/user"
@@ -62,11 +63,6 @@ export function Home() {
     })();
   `
   useEffect(() => {
-    setIsLoading(true)
-    refetch()
-  }, [linkType, isAutoClick])
-
-  useEffect(() => {
     if (!isAutoClick) {
       return
     }
@@ -101,12 +97,12 @@ export function Home() {
   }, [isStop])
 
   useEffect(() => {
+    let timer: any
     if (isLoading) {
       return
     }
     if (visitTime > 0) {
-      const timer = setTimeout(() => setVisitTime((vit) => vit - 1), 1000)
-      return () => clearTimeout(timer)
+      timer = setTimeout(() => setVisitTime((vit) => vit - 1), 1000)
     } else {
       getCoin(uri?.coin)
       reqCoin({ linkId: uri?.linkId })
@@ -115,6 +111,7 @@ export function Home() {
         refetch()
       }
     }
+    return () => clearTimeout(timer)
   }, [uri, visitTime, isLoading, isAutoClick])
 
   const styles = StyleSheet.create({
@@ -278,7 +275,6 @@ export function Home() {
             padding: 5,
           }}
           onPress={() => {
-            setLinkType(-1)
             Animated.parallel([
               Animated.timing(fadeAnimA, {
                 toValue: 0, // A 渐显
@@ -343,23 +339,6 @@ export function Home() {
         </Animated.View>
       )}
       {/* {!isLoading && !isOtherPage && ( */}
-      {!isStop && !isLoading && (
-        <Text
-          style={{
-            position: "absolute",
-            left: -15,
-            top: "50%",
-            zIndex: 2,
-            backgroundColor: "rgba(0,0,0,.3)",
-            padding: 20,
-            fontSize: 20,
-            color: "white",
-            borderRadius: 50,
-          }}
-        >
-          {visitTime}
-        </Text>
-      )}
       {/* {!isStop && !isAutoClick && (
         <Pressable
           onPress={() => refetch()}
@@ -396,25 +375,42 @@ export function Home() {
           />
         </View>
       ) : (
-        <WebView
-          style={{ zIndex: -1 }}
-          source={{
-            uri: uri?.fullLink,
-          }}
-          injectedJavaScript={handleInjectJavaScript}
-          onShouldStartLoadWithRequest={(event: any) => {
-            if (event.url.includes("login")) {
-              setIsStop(true)
-            }
-            return true
-          }}
-          onLoad={() => {
-            setIsLoading(true)
-          }}
-          onLoadEnd={() => {
-            setIsLoading(false)
-          }}
-        />
+        <>
+          <Text
+            style={{
+              position: "absolute",
+              left: -15,
+              top: "50%",
+              zIndex: 2,
+              backgroundColor: "rgba(0,0,0,.3)",
+              padding: 20,
+              fontSize: 20,
+              color: "white",
+              borderRadius: 50,
+            }}
+          >
+            {visitTime}
+          </Text>
+          <WebView
+            style={{ zIndex: -1 }}
+            source={{
+              uri: uri?.fullLink,
+            }}
+            injectedJavaScript={handleInjectJavaScript}
+            onShouldStartLoadWithRequest={(event: any) => {
+              if (event.url.includes("login")) {
+                setIsStop(true)
+              }
+              return true
+            }}
+            onLoad={() => {
+              setIsLoading(true)
+            }}
+            onLoadEnd={() => {
+              setIsLoading(false)
+            }}
+          />
+        </>
       )}
     </View>
   )
