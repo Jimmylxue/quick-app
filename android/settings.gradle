@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = '店主之家'
+rootProject.name = '店主之家V2'
 
 dependencyResolutionManagement {
   versionCatalogs {

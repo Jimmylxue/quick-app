@@ -64,7 +64,7 @@ export const Login = observer(({ changePage }: TProps) => {
           <View className=" mt-1 ">
             <Text className="  text-3xl">登录</Text>
             <Text className=" text-gray-500 text-ls mt-2">
-              请输入您的账号和密码
+              请输入您的账号和密码{process.env.EXPO_PUBLIC_API_BASE_URL}
             </Text>
           </View>
           <View className=" mt-10">
