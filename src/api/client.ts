@@ -16,6 +16,7 @@ export class HTTPClient {
   constructor(baseURL?: string) {
     const http = axios.create({
       baseURL: process.env.EXPO_PUBLIC_API_BASE_URL,
+      timeout: 50 * 1000,
     })
 
     console.log("API REQUEST", process.env.EXPO_PUBLIC_API_BASE_URL)

@@ -565,6 +565,15 @@ export function Mine() {
               },
             ]}
             onPress={async () => {
+              const regex = /^\d+$/
+              if (!regex.test(newPassword)) {
+                Toast.show({
+                  text1: "密码只能为数字",
+                  type: "error",
+                  visibilityTime: 500,
+                })
+                return
+              }
               const res = await changePassword({
                 originPassword,
                 newPassword,

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "店主之家",
+    "name": "店主之家V2",
     "slug": "my-app",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/talk.png",
     "userInterfaceStyle": "light",
