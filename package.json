@@ -11,7 +11,7 @@
     "web": "expo start --web",
     "eas-build-post-install": "tailwindcss -i ./src/styles/global.css -o ./node_modules/.cache/nativewind/src/styles/global.css.native.css",
     "build:android-prod": "NODE_ENV=production eas build --profile release --platform android --local",
-    "build": "eas build --platform android --profile preview"
+    "build": "eas build --platform android"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
