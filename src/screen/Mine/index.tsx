@@ -2,18 +2,18 @@ import {
   fetchChangePassword,
   fetchCoin,
   fetchLogout,
-  fetchMeInfo,
+  fetchMeInfo
 } from "@src/api/app/user"
 import {
   fetchCancelWithdraw,
   fetchRequestWithdraw,
-  getWithdrawList,
+  getWithdrawList
 } from "@src/api/app/withdraw"
 import Button from "@src/components/Button/Button"
 import { useUser } from "@src/hooks/useAuth"
 import classNames from "classnames"
 import moment from "moment"
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import {
   Animated,
   Image,
@@ -21,7 +21,7 @@ import {
   ScrollView,
   Text,
   TextInput,
-  View,
+  View
 } from "react-native"
 import Toast from "react-native-toast-message"
 
@@ -69,26 +69,26 @@ export function Mine() {
   const { mutateAsync: statusLogout } = fetchLogout()
   const { data: withdrawList, refetch: refetchWithdrawList } = getWithdrawList({
     page,
-    pageSize: 20,
+    pageSize: 20
   }) as any
   const { mutateAsync: cancelWithdraw } = fetchCancelWithdraw()
   const { mutateAsync: changePassword } = fetchChangePassword()
   const { mutateAsync: meInfoText } = fetchMeInfo()
   const [text, setText] = useState("")
-
+  const currentWithdraw = useRef<any>()
   // 提现记录
   const showB = () => {
     Animated.parallel([
       Animated.timing(allContent, {
         toValue: 999, // A 渐隐
         duration: 500,
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.timing(withdraw, {
         toValue: 0,
         duration: 500,
-        useNativeDriver: true,
-      }),
+        useNativeDriver: true
+      })
     ]).start()
   }
 
@@ -98,18 +98,18 @@ export function Mine() {
       Animated.timing(allContent, {
         toValue: 1, // A 渐显
         duration: 500,
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.timing(withdraw, {
         toValue: 999,
         duration: 500,
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.timing(showChangePassword, {
         toValue: 999,
         duration: 500,
-        useNativeDriver: true,
-      }),
+        useNativeDriver: true
+      })
     ]).start()
   }
 
@@ -119,13 +119,13 @@ export function Mine() {
       Animated.timing(allContent, {
         toValue: 999, // A 渐显
         duration: 500,
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.timing(showChangePassword, {
         toValue: 0,
         duration: 500,
-        useNativeDriver: true,
-      }),
+        useNativeDriver: true
+      })
     ]).start()
   }
 
@@ -136,14 +136,14 @@ export function Mine() {
         setIsShowButton(false)
         setIsWithdraw(false)
         showB()
-      },
+      }
     },
     {
       title: "修改密码",
       onPress: () => {
         setIsShowButton(false)
         showC()
-      },
+      }
     },
     {
       title: "敬请期待",
@@ -151,16 +151,16 @@ export function Mine() {
         Toast.show({
           type: "success",
           text1: "敬请期待",
-          visibilityTime: 500,
+          visibilityTime: 500
         })
-      },
-    },
+      }
+    }
   ]
   return (
     <View
       style={{
         position: "relative",
-        flex: 1,
+        flex: 1
       }}
     >
       <View
@@ -171,7 +171,7 @@ export function Mine() {
           padding: 20,
           paddingTop: 40,
           borderBottomLeftRadius: 30,
-          borderBottomRightRadius: 30,
+          borderBottomRightRadius: 30
         }}
       >
         <Image
@@ -183,7 +183,7 @@ export function Mine() {
             marginLeft: 30,
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
+            justifyContent: "center"
           }}
         >
           <Text style={{ fontSize: 16, fontWeight: "bold", color: "#fff" }}>
@@ -194,7 +194,7 @@ export function Mine() {
               fontSize: 16,
               fontWeight: "bold",
               marginTop: 10,
-              color: "#fff",
+              color: "#fff"
             }}
           >
             用户名：{user?.wxName}
@@ -204,7 +204,7 @@ export function Mine() {
               fontSize: 16,
               fontWeight: "bold",
               marginTop: 10,
-              color: "#fff",
+              color: "#fff"
             }}
           >
             手机号：{user?.phone}
@@ -216,7 +216,7 @@ export function Mine() {
         style={{
           position: "relative",
           flex: 1,
-          margin: 20,
+          margin: 20
         }}
       >
         {/* 所有内容 */}
@@ -227,7 +227,7 @@ export function Mine() {
             display: "flex",
             flexDirection: "column",
             position: "relative",
-            transform: [{ translateY: allContent }],
+            transform: [{ translateY: allContent }]
           }}
         >
           <View
@@ -237,7 +237,7 @@ export function Mine() {
               alignItems: "center",
               backgroundColor: "#fff",
               borderBottomColor: "#f2f2f2",
-              borderBottomWidth: 4,
+              borderBottomWidth: 4
             }}
           >
             <Image
@@ -254,7 +254,7 @@ export function Mine() {
               alignItems: "center",
               backgroundColor: "#fff",
               borderBottomColor: "#f2f2f2",
-              borderBottomWidth: 4,
+              borderBottomWidth: 4
             }}
           >
             <Image
@@ -271,7 +271,7 @@ export function Mine() {
               alignItems: "center",
               backgroundColor: "#fff",
               borderBottomColor: "#f2f2f2",
-              borderBottomWidth: 4,
+              borderBottomWidth: 4
             }}
           >
             <Image
@@ -288,7 +288,7 @@ export function Mine() {
               alignItems: "center",
               backgroundColor: "#fff",
               borderBottomColor: "#f2f2f2",
-              borderBottomWidth: 4,
+              borderBottomWidth: 4
             }}
           >
             <Image
@@ -305,7 +305,7 @@ export function Mine() {
               alignItems: "center",
               position: "relative",
               borderBottomColor: "#f2f2f2",
-              borderBottomWidth: 4,
+              borderBottomWidth: 4
             }}
           >
             <Image
@@ -327,7 +327,7 @@ export function Mine() {
                     : 0),
                 borderLeftWidth: 2,
                 borderLeftColor: "#eee",
-                paddingLeft: 20,
+                paddingLeft: 20
               }}
             >
               <Pressable
@@ -351,7 +351,7 @@ export function Mine() {
               style={{
                 borderBottomColor: "#eee",
                 borderBottomWidth: 4,
-                padding: 20,
+                padding: 20
               }}
             >
               <Pressable onPress={item.onPress}>
@@ -371,7 +371,7 @@ export function Mine() {
             height: "100%",
             borderRadius: 20,
             backgroundColor: "#fff",
-            zIndex: 3,
+            zIndex: 3
           }}
         >
           {isWithdraw && (
@@ -397,40 +397,49 @@ export function Mine() {
                     padding: 10,
                     paddingLeft: 20,
                     paddingRight: 20,
-                    borderRadius: 6,
-                  },
+                    borderRadius: 6
+                  }
                 ]}
                 onPress={async () => {
                   if (Number(coin) > (data as any)) {
                     Toast.show({
                       type: "error",
                       text1: "当前数量大于拥有金币",
-                      visibilityTime: 1000,
+                      visibilityTime: 1000
                     })
                     return
                   } else if (Number(coin) < 1000) {
                     Toast.show({
                       type: "error",
                       text1: "金币太少，请先浏览",
-                      visibilityTime: 500,
+                      visibilityTime: 500
                     })
                     return
                   } else if (Number(coin) % 1000 !== 0) {
                     Toast.show({
                       type: "error",
                       text1: "提现金额必须为1000的整数倍",
-                      visibilityTime: 500,
+                      visibilityTime: 500
                     })
                     return
                   }
+                  if (currentWithdraw.current - +new Date() < 10 * 1000) {
+                    Toast.show({
+                      type: "error",
+                      text1: "请勿频繁发起提现",
+                      visibilityTime: 500
+                    })
+                    return
+                  }
+                  currentWithdraw.current = +new Date()
                   await mutateAsync({
-                    withdrawalCoin: Number(coin),
+                    withdrawalCoin: Number(coin)
                   })
                   setCoin("")
                   Toast.show({
                     type: "success",
                     text1: "申请成功，请等待审核",
-                    visibilityTime: 500,
+                    visibilityTime: 500
                   })
                   await refetch()
                   await refetchWithdrawList()
@@ -447,7 +456,7 @@ export function Mine() {
               left: "50%",
               zIndex: 2,
               padding: 10,
-              transform: [{ translateX: -25 }],
+              transform: [{ translateX: -25 }]
             }}
             onPress={() => {
               setIsShowButton(true)
@@ -463,7 +472,7 @@ export function Mine() {
                 borderRadius: 18,
                 textAlign: "center",
                 lineHeight: 36,
-                color: "white",
+                color: "white"
               }}
             >
               X
@@ -473,7 +482,7 @@ export function Mine() {
             style={{
               position: "relative",
               flex: 1,
-              padding: 10,
+              padding: 10
             }}
           >
             {withdrawList?.result?.length === 0 && <Text>暂无提现记录</Text>}
@@ -498,7 +507,7 @@ export function Mine() {
                     Toast.show({
                       type: "success",
                       text1: "取消成功",
-                      visibilityTime: 500,
+                      visibilityTime: 500
                     })
                     await refetch()
                   }}
@@ -507,7 +516,7 @@ export function Mine() {
                     borderColor:
                       item.payStatus === 1 ? "#1e90ff" : "transparent",
                     borderWidth: 1,
-                    borderRadius: 8,
+                    borderRadius: 8
                   }}
                 >
                   <Text>{item.payStatus === 1 ? "取消申请" : "已完成"}</Text>
@@ -528,7 +537,7 @@ export function Mine() {
             borderRadius: 20,
             backgroundColor: "#fff",
             zIndex: 4,
-            padding: 20,
+            padding: 20
           }}
         >
           <View className=" flex-row border-b border-solid border-blue-300 items-center">
@@ -561,8 +570,8 @@ export function Mine() {
                 paddingLeft: 20,
                 paddingRight: 20,
                 borderRadius: 6,
-                marginTop: 20,
-              },
+                marginTop: 20
+              }
             ]}
             onPress={async () => {
               const regex = /^\d+$/
@@ -570,13 +579,13 @@ export function Mine() {
                 Toast.show({
                   text1: "密码只能为数字",
                   type: "error",
-                  visibilityTime: 500,
+                  visibilityTime: 500
                 })
                 return
               }
               const res = await changePassword({
                 originPassword,
-                newPassword,
+                newPassword
               })
               if (res === "更新成功") {
                 logOut()
@@ -593,7 +602,7 @@ export function Mine() {
               top: -40,
               left: "50%",
               padding: 10,
-              transform: [{ translateX: -25 }],
+              transform: [{ translateX: -25 }]
             }}
             onPress={() => {
               setNewPassword("")
@@ -610,7 +619,7 @@ export function Mine() {
                 borderRadius: 18,
                 textAlign: "center",
                 lineHeight: 36,
-                color: "white",
+                color: "white"
               }}
             >
               X
@@ -630,14 +639,14 @@ export function Mine() {
             backgroundColor: "#fff",
             zIndex: 999,
             padding: 20,
-            paddingBottom: 20,
+            paddingBottom: 20
           }}
         >
           <ScrollView
             style={{
               position: "relative",
               flex: 1,
-              padding: 10,
+              padding: 10
             }}
           >
             <Text>{text + "\n"}</Text>
@@ -648,20 +657,20 @@ export function Mine() {
               top: -40,
               left: "50%",
               padding: 10,
-              transform: [{ translateX: -25 }],
+              transform: [{ translateX: -25 }]
             }}
             onPress={() => {
               Animated.parallel([
                 Animated.timing(meInfo, {
                   toValue: 999,
                   duration: 500,
-                  useNativeDriver: true,
+                  useNativeDriver: true
                 }),
                 Animated.timing(allContent, {
                   toValue: 0,
                   duration: 500,
-                  useNativeDriver: true,
-                }),
+                  useNativeDriver: true
+                })
               ]).start()
               setIsShowButton(true)
             }}
@@ -674,7 +683,7 @@ export function Mine() {
                 borderRadius: 18,
                 textAlign: "center",
                 lineHeight: 36,
-                color: "white",
+                color: "white"
               }}
             >
               X
@@ -688,7 +697,7 @@ export function Mine() {
             position: "absolute",
             width: "100%",
             bottom: 10,
-            zIndex: 3,
+            zIndex: 3
           }}
         >
           <Pressable
@@ -700,13 +709,13 @@ export function Mine() {
                 Animated.timing(meInfo, {
                   toValue: 0,
                   duration: 500,
-                  useNativeDriver: true,
+                  useNativeDriver: true
                 }),
                 Animated.timing(allContent, {
                   toValue: 999,
                   duration: 500,
-                  useNativeDriver: true,
-                }),
+                  useNativeDriver: true
+                })
               ]).start()
             }}
           >

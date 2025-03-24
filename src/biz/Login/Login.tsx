@@ -1,14 +1,13 @@
 import Button from "@src/components/Button/Button"
-import { NIcon } from "@src/components/Icon/NIcon"
 import { Input } from "@src/components/Input"
-import { useUser } from "@src/hooks/useAuth"
+import { auth, useUser } from "@src/hooks/useAuth"
 import { observer } from "mobx-react-lite"
 import { useEffect, useState } from "react"
 import { Image, Text, View } from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withTiming,
+  withTiming
 } from "react-native-reanimated"
 
 type TProps = {
@@ -27,7 +26,7 @@ export const Login = observer(({ changePage }: TProps) => {
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      opacity: opacity.value,
+      opacity: opacity.value
     }
   })
 
@@ -44,20 +43,20 @@ export const Login = observer(({ changePage }: TProps) => {
     <Animated.View style={[animatedStyle]}>
       <View className=" mt-[30] px-4">
         {/* <NIcon
-          iconType="EvilIcons"
-          name="chevron-left"
-          // color="#FFF"
-          size={50}
-          onPress={() => {
-            changePage("start")
-          }}
-        /> */}
+            iconType="EvilIcons"
+            name="chevron-left"
+            // color="#FFF"
+            size={50}
+            onPress={() => {
+              changePage("start")
+            }}
+          /> */}
         <Image
           source={require("@src/assets/images/talk.png")}
           style={{
             width: 200,
             height: 200,
-            alignSelf: "center",
+            alignSelf: "center"
           }}
         />
         <View className=" px-4">
@@ -95,10 +94,12 @@ export const Login = observer(({ changePage }: TProps) => {
               theme="primary"
               className=" mt-20 rounded-3xl w-[270]"
               onPress={async () => {
+                auth.setUser(phone)
+                auth.setPassword(password)
                 await login({
                   id: phone,
                   password,
-                  noEncrypt: true,
+                  noEncrypt: true
                 })
               }}
             >

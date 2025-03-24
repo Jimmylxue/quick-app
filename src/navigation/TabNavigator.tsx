@@ -6,7 +6,6 @@ import { Pressable, SafeAreaView, StatusBar, Text } from "react-native"
 import { Home } from "@src/screen/Home"
 import Message from "@src/screen/Message"
 import { Mine } from "@src/screen/Mine"
-import { fetchHeart } from "@src/api/app/user"
 import { NIcon } from "@src/components/Icon/NIcon"
 import { useNavigation } from "@react-navigation/native"
 import { getMessageList } from "@src/api/app/message"
@@ -15,14 +14,6 @@ const Tab = createBottomTabNavigator()
 export const TabNavigator = () => {
   const navigation = useNavigation()
   let timer: any = null
-  const { mutateAsync } = fetchHeart()
-  useEffect(() => {
-    clearInterval(timer)
-    timer = setInterval(() => {
-      mutateAsync()
-    }, 1000 * 5)
-    return () => clearInterval(timer)
-  }, [])
   const { data, refetch: refetchMessage } = getMessageList()
   const [unreadCount, setUnreadCount] = useState({ msg: 0, sys: 0 })
   useEffect(() => {
